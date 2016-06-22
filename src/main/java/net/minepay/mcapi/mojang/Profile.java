@@ -72,6 +72,16 @@ public class Profile {
     }
 
     /**
+     * Checks whether the supplied identifier is either a valid UUID or a Mojang identifier.
+     *
+     * @param identifier an identifier.
+     * @return true if value is a valid Mojang identifier or UUID, false otherwise.
+     */
+    static boolean isValidIdentifier(@Nonnull String identifier) {
+        return isValidMojangIdentifier(identifier) || isValidUUID(identifier);
+    }
+
+    /**
      * Checks whether the supplied identifier string is a valid Mojang identifier.
      *
      * @param identifier an identifier.
