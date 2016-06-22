@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
@@ -61,14 +62,19 @@ public class Profile {
     }
 
     /**
-     * Converts a Mojang identifier into a standard UUID.
+     * Converts a Mojang identifier or regular UUID into a standard UUID pojo.
      *
      * @param identifier an identifier.
      * @return a UUID.
      */
     @Nonnull
     static UUID convertIdentifier(@Nonnull String identifier) {
-        return UUID.fromString(MOJANG_UUID_PATTERN.matcher(identifier).replaceFirst("$1-$2-$3-$4-$5"));
+        final Matcher matcher;
+        if ((matcher = MOJANG_UUID_PATTERN.matcher(identifier)).matches()) {
+            identifier = matcher.replaceFirst("$1-$2-$3-$4-$5");
+        }
+
+        return UUID.fromString(identifier);
     }
 
     /**
