@@ -22,7 +22,8 @@ import javax.annotation.concurrent.ThreadSafe;
 @Immutable
 @ThreadSafe
 public class Profile {
-    private static final Pattern UUID_PATTERN = Pattern.compile("^([A-F0-9]{8})([A-F0-9]{4})([01-5][0-9A-F]{3})([089AB][0-9A-F]{3})([A-F0-9]{12})$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern MOJANG_UUID_PATTERN = Pattern.compile("^([A-F0-9]{8})([A-F0-9]{4})([01-5][0-9A-F]{3})([089AB][0-9A-F]{3})([A-F0-9]{12})$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern UUID_PATTERN = Pattern.compile("^([A-F0-9]{8})-([A-F0-9]{4})-([01-5][0-9A-F]{3})-([089AB][0-9A-F]{3})-([A-F0-9]{12})$", Pattern.CASE_INSENSITIVE);
     private final String id;
     private final String name;
     private final List<ProfileProperty> properties;
@@ -67,7 +68,27 @@ public class Profile {
      */
     @Nonnull
     static UUID convertIdentifier(@Nonnull String identifier) {
-        return UUID.fromString(UUID_PATTERN.matcher(identifier).replaceFirst("$1-$2-$3-$4-$5"));
+        return UUID.fromString(MOJANG_UUID_PATTERN.matcher(identifier).replaceFirst("$1-$2-$3-$4-$5"));
+    }
+
+    /**
+     * Checks whether the supplied identifier string is a valid Mojang identifier.
+     *
+     * @param identifier an identifier.
+     * @return true if valid, false otherwise.
+     */
+    static boolean isValidMojangIdentifier(@Nonnull String identifier) {
+        return MOJANG_UUID_PATTERN.matcher(identifier).matches();
+    }
+
+    /**
+     * Checks whether the supplied identifier string is a valid UUID.
+     *
+     * @param identifier a uuid.
+     * @return true if valid, false otherwise.
+     */
+    static boolean isValidUUID(@Nonnull String identifier) {
+        return UUID_PATTERN.matcher(identifier).matches();
     }
 
     @Nonnull
