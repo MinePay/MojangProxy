@@ -1,4 +1,4 @@
-package net.minepay.mcapi.controller.v1;
+package net.minepay.mcapi.controller;
 
 import net.minepay.mcapi.entity.ServerVersion;
 
@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/")
 public class RootController {
 
     /**
