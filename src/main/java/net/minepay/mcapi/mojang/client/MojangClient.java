@@ -1,4 +1,7 @@
-package net.minepay.mcapi.mojang;
+package net.minepay.mcapi.mojang.client;
+
+import net.minepay.mcapi.mojang.Profile;
+import net.minepay.mcapi.mojang.ProfileName;
 
 import java.time.Instant;
 import java.util.UUID;
