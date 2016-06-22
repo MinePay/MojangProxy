@@ -1,6 +1,7 @@
 package net.minepay.mcapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.annotation.Nonnull;
 
@@ -15,7 +16,7 @@ public class ServerVersion {
     private final String vendor;
 
     @JsonCreator
-    public ServerVersion(@Nonnull String name, @Nonnull String version, @Nonnull String vendor) {
+    public ServerVersion(@Nonnull @JsonProperty("name") String name, @Nonnull @JsonProperty("version") String version, @Nonnull @JsonProperty("vendor") String vendor) {
         this.name = name;
         this.version = version;
         this.vendor = vendor;
