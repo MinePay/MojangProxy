@@ -11,6 +11,7 @@ import javax.annotation.concurrent.ThreadSafe;
 /**
  * Provides a representation for profile properties.
  *
+ * @param <T> a property value type.
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 @Immutable
