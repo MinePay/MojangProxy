@@ -3,6 +3,7 @@ package net.minepay.mcapi.mojang.client;
 import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public interface MojangClient {
      * @return a profile or, if no such profile was found, null.
      */
     @Nullable
-    Profile findProfile(@Nonnull String identifier);
+    Profile findProfile(@Nonnull String identifier) throws IOException;
 
     /**
      * Attempts to find a profile for the specified profile UUID.
@@ -37,7 +38,7 @@ public interface MojangClient {
      * @return a profile or, if no such profile was found, null.
      */
     @Nullable
-    Profile findProfile(@Nonnull UUID identifier);
+    Profile findProfile(@Nonnull UUID identifier) throws IOException;
 
     /**
      * Attempts to find the profile identifier which corresponds to the specified display name at
@@ -47,7 +48,7 @@ public interface MojangClient {
      * @return an identifier or, if no such name is registered, null.
      */
     @Nullable
-    ProfileName findIdentifier(@Nonnull String name);
+    ProfileName findIdentifier(@Nonnull String name) throws IOException;
 
     /**
      * Attempts to find the profile identifier which corresponds to the specified display name at a
@@ -56,7 +57,9 @@ public interface MojangClient {
      * @param name      a name.
      * @param timestamp a timestamp.
      * @return an identifier or, if no such name is registered, null.
+     *
+     * @throws IOException when a request fails.
      */
     @Nullable
-    ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp);
+    ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) throws IOException;
 }
