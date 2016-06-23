@@ -2,9 +2,11 @@ package net.minepay.mcapi.mojang.client;
 
 import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
+import net.minepay.mcapi.mojang.ProfileNameChange;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -62,4 +64,26 @@ public interface MojangClient {
      */
     @Nullable
     ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) throws IOException;
+
+    /**
+     * Attempts to find the name history for a profile.
+     *
+     * @param identifier an identifier.
+     * @return a list of name changes.
+     *
+     * @throws IOException when a request fails.
+     */
+    @Nullable
+    List<ProfileNameChange> getNameHistory(@Nonnull String identifier) throws IOException;
+
+    /**
+     * Attempts to find the name history for a profile.
+     *
+     * @param identifier an identifier.
+     * @return a list of name changes.
+     *
+     * @throws IOException when a request fails.
+     */
+    @Nullable
+    List<ProfileNameChange> getNameHistory(@Nonnull UUID identifier) throws IOException;
 }
