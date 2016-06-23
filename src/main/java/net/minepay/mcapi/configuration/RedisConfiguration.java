@@ -39,24 +39,33 @@ public class RedisConfiguration {
     @Value("${redis.pool-size:12}")
     private int poolSize;
 
-    /**
-     * Provides a Redis connection factory.
-     *
-     * @return a connection factory.
-     */
+    @Bean
+    @Nonnull
+    public JedisPoolConfig jedisPoolConfig() {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+
+        poolConfig.setMaxIdle(-1);
+        poolConfig.setMaxWaitMillis(5);
+        poolConfig.setMinIdle(this.poolSize);
+        poolConfig.setMaxTotal(this.poolSize);
+
+        poolConfig.setBlockWhenExhausted(false);
+        poolConfig.setTestOnBorrow(true);
+        poolConfig.setTestOnReturn(true);
+        poolConfig.setTestWhileIdle(true);
+
+        return poolConfig;
+    }
+
     @Bean
     @Nonnull
     public RedisConnectionFactory redisConnectionFactory() {
-        // TODO: Cluster configuration?
+        JedisConnectionFactory connectionFactory = new JedisConnectionFactory(this.jedisPoolConfig());
+        connectionFactory.setUsePool(true);
 
-        JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxTotal(this.poolSize);
-
-        JedisConnectionFactory connectionFactory = new JedisConnectionFactory(poolConfig);
         connectionFactory.setHostName(this.hostname);
         connectionFactory.setPort(this.portNumber);
         connectionFactory.setDatabase(this.databaseNumber);
-        connectionFactory.setUsePool(true);
 
         if (this.password != null && !this.password.isEmpty()) {
             connectionFactory.setPassword(this.password);
@@ -77,6 +86,7 @@ public class RedisConfiguration {
         template.setConnectionFactory(this.redisConnectionFactory());
         template.setDefaultSerializer(new JacksonRedisSerializer<>(Profile.class));
         template.setKeySerializer(new StringRedisSerializer());
+        template.setEnableTransactionSupport(true);
         return template;
     }
 
@@ -92,6 +102,7 @@ public class RedisConfiguration {
         template.setConnectionFactory(this.redisConnectionFactory());
         template.setDefaultSerializer(new JacksonRedisSerializer<>(ProfileName.class));
         template.setKeySerializer(new StringRedisSerializer());
+        template.setEnableTransactionSupport(true);
         return template;
     }
 
@@ -107,6 +118,7 @@ public class RedisConfiguration {
         template.setConnectionFactory(this.redisConnectionFactory());
         template.setDefaultSerializer(new JacksonRedisSerializer<>(TypeFactory.defaultInstance().constructCollectionType(List.class, ProfileNameChange.class)));
         template.setKeySerializer(new StringRedisSerializer());
+        template.setEnableTransactionSupport(true);
         return template;
     }
 }

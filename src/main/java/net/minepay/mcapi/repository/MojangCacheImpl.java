@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -52,6 +53,7 @@ public class MojangCacheImpl implements MojangCache {
      */
     @Nullable
     @Override
+    @Transactional("profileRedisTemplate")
     public Profile findProfile(@Nonnull String identifier) {
         return this.profileValueOperations.get("profile:" + identifier.toLowerCase());
     }
@@ -60,6 +62,7 @@ public class MojangCacheImpl implements MojangCache {
      * {@inheritDoc}
      */
     @Override
+    @Transactional("profileRedisTemplate")
     public void saveProfile(@Nonnull Profile profile) {
         if (this.profileValueOperations.setIfAbsent("profile:" + profile.getId().toLowerCase(), profile) && this.cacheConfiguration.getProfileCacheTime() != 0) {
             this.profileRedisTemplate.expire("profile:" + profile.getId().toLowerCase(), this.cacheConfiguration.getProfileCacheTime(), TimeUnit.SECONDS);
@@ -71,6 +74,7 @@ public class MojangCacheImpl implements MojangCache {
      */
     @Nullable
     @Override
+    @Transactional("identifierRedisTemplate")
     public ProfileName findIdentifier(@Nonnull String name) {
         return this.identifierValueOperations.get("name:" + name.toLowerCase());
     }
@@ -80,6 +84,7 @@ public class MojangCacheImpl implements MojangCache {
      */
     @Nullable
     @Override
+    @Transactional("identifierRedisTemplate")
     public ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) {
         return this.identifierValueOperations.get("name:" + timestamp.getEpochSecond() + ":" + name.toLowerCase());
     }
@@ -88,6 +93,7 @@ public class MojangCacheImpl implements MojangCache {
      * {@inheritDoc}
      */
     @Override
+    @Transactional("identifierRedisTemplate")
     public void saveIdentifier(@Nonnull ProfileName name, @Nonnull Instant timestamp) {
         if (this.identifierValueOperations.setIfAbsent("name:" + timestamp.getEpochSecond() + ":" + name.getName().toLowerCase(), name)) {
             this.identifierRedisTemplate.expire("name:" + timestamp.getEpochSecond() + ":" + name.getName().toLowerCase(), this.cacheConfiguration.getNameCacheTime(), TimeUnit.SECONDS);
@@ -98,6 +104,7 @@ public class MojangCacheImpl implements MojangCache {
      * {@inheritDoc}
      */
     @Override
+    @Transactional("identifierRedisTemplate")
     public void saveIdentifier(@Nonnull ProfileName name) {
         if (this.identifierValueOperations.setIfAbsent("name:" + name.getName().toLowerCase(), name)) {
             this.identifierRedisTemplate.expire("name:" + name.getName().toLowerCase(), this.cacheConfiguration.getNameCacheTime(), TimeUnit.SECONDS);
@@ -109,6 +116,7 @@ public class MojangCacheImpl implements MojangCache {
      */
     @Nullable
     @Override
+    @Transactional("nameHistoryRedisTemplate")
     public List<ProfileNameChange> findNameHistory(@Nonnull String identifier) {
         return this.nameHistoryValueOperations.get("name_history:" + identifier.toLowerCase());
     }
@@ -117,6 +125,7 @@ public class MojangCacheImpl implements MojangCache {
      * {@inheritDoc}
      */
     @Override
+    @Transactional("nameHistoryRedisTemplate")
     public void saveNameHistory(@Nonnull String identifier, @Nonnull List<ProfileNameChange> nameChanges) {
         if (this.nameHistoryValueOperations.setIfAbsent("name_history:" + identifier.toLowerCase(), nameChanges)) {
             this.nameHistoryRedisTemplate.expire("name_history:" + identifier.toLowerCase(), this.cacheConfiguration.getHistoryCacheTime(), TimeUnit.SECONDS);
