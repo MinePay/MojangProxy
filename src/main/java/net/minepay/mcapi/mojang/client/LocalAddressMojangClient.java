@@ -34,6 +34,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
+ * Provides a Mojang client for a specific local IP address.
+ *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 public class LocalAddressMojangClient implements MojangClient {
