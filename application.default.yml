@@ -1,0 +1,10 @@
+redis:
+  hostname: redis.torchmind.local
+  port: 6379
+  database-number: 1
+  password:
+  pool-size: 8
+cache:
+  profileCacheTime: 86400
+  nameCacheTime: 3024000
+  historyCacheTime: 86400
