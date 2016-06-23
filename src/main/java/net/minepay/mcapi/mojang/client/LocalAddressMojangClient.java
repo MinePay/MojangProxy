@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
+import net.minepay.mcapi.mojang.client.error.InterfaceException;
 import net.minepay.mcapi.mojang.client.error.RateLimitExceededException;
 
 import org.apache.http.HttpResponse;
@@ -111,8 +112,14 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpGet request = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/" + identifier);
         HttpResponse response = this.client.execute(request);
 
-        if (response.getStatusLine().getStatusCode() == 429) {
-            throw new RateLimitExceededException();
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200: break;
+            case 204:
+                return null;
+            case 429:
+                throw new RateLimitExceededException();
+            default:
+                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -140,8 +147,14 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8"));
         HttpResponse response = this.client.execute(request);
 
-        if (response.getStatusLine().getStatusCode() == 429) {
-            throw new RateLimitExceededException();
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200: break;
+            case 204:
+                return null;
+            case 429:
+                throw new RateLimitExceededException();
+            default:
+                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -160,8 +173,14 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8") + "?at=" + timestamp.getEpochSecond());
         HttpResponse response = this.client.execute(request);
 
-        if (response.getStatusLine().getStatusCode() == 429) {
-            throw new RateLimitExceededException();
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200: break;
+            case 204:
+                return null;
+            case 429:
+                throw new RateLimitExceededException();
+            default:
+                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -190,8 +209,14 @@ public class LocalAddressMojangClient implements MojangClient {
 
         HttpResponse response = this.client.execute(request);
 
-        if (response.getStatusLine().getStatusCode() == 429) {
-            throw new RateLimitExceededException();
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200: break;
+            case 204:
+                return null;
+            case 429:
+                throw new RateLimitExceededException();
+            default:
+                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -210,8 +235,14 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpGet request = new HttpGet("https://api.mojang.com/user/profiles/" + identifier + "/names");
         HttpResponse response = this.client.execute(request);
 
-        if (response.getStatusLine().getStatusCode() == 429) {
-            throw new RateLimitExceededException();
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200: break;
+            case 204:
+                return null;
+            case 429:
+                throw new RateLimitExceededException();
+            default:
+                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
