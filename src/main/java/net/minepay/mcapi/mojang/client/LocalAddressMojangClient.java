@@ -238,6 +238,16 @@ public class LocalAddressMojangClient implements MojangClient {
     }
 
     /**
+     * Retrieves the address which will be utilized for queries.
+     *
+     * @return an address.
+     */
+    @Nonnull
+    public InetAddress getAddress() {
+        return this.address;
+    }
+
+    /**
      * Retrieves the overall rate limitation for this client.
      *
      * @return a rate limit.
