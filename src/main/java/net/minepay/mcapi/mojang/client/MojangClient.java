@@ -66,6 +66,17 @@ public interface MojangClient {
     ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) throws IOException;
 
     /**
+     * Attempts to find the corresponding profile identifiers for the supplied list of names.
+     *
+     * @param names a name.
+     * @return a list of profile names.
+     *
+     * @throws IOException when a request fails.
+     */
+    @Nullable
+    List<ProfileName> findIdentifier(@Nonnull List<String> names) throws IOException;
+
+    /**
      * Attempts to find the name history for a profile.
      *
      * @param identifier an identifier.
