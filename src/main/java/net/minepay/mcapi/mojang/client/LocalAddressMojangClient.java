@@ -104,6 +104,8 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public Profile findProfile(@Nonnull String identifier) throws IOException {
+        this.requestCount.incrementAndGet();
+
         HttpGet request = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/" + identifier);
         HttpResponse response = this.client.execute(request);
 
@@ -131,6 +133,8 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public ProfileName findIdentifier(@Nonnull String name) throws IOException {
+        this.requestCount.incrementAndGet();
+
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8"));
         HttpResponse response = this.client.execute(request);
 
@@ -149,6 +153,8 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) throws IOException {
+        this.requestCount.incrementAndGet();
+
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8") + "?at=" + timestamp.getEpochSecond());
         HttpResponse response = this.client.execute(request);
 
@@ -167,6 +173,8 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileName> findIdentifier(@Nonnull List<String> names) throws IOException {
+        this.requestCount.incrementAndGet();
+
         HttpPost request = new HttpPost("https://api.mojang.com/profiles/minecraft");
         {
             BasicHttpEntity entity = new BasicHttpEntity();
@@ -195,6 +203,8 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileNameChange> getNameHistory(@Nonnull String identifier) throws IOException {
+        this.requestCount.incrementAndGet();
+
         HttpGet request = new HttpGet("https://api.mojang.com/user/profiles/" + identifier + "/names");
         HttpResponse response = this.client.execute(request);
 
