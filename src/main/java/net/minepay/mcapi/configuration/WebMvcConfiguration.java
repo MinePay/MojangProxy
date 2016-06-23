@@ -49,8 +49,9 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
                 .defaultContentType(MediaType.APPLICATION_JSON_UTF8)
                 .mediaType("json", MediaType.APPLICATION_JSON_UTF8)
                 .mediaType("xml", MediaType.TEXT_XML)
+                .ignoreAcceptHeader(true) // make Night happy
                 .favorParameter(false)
-                .favorPathExtension(false)
+                .favorPathExtension(true)
                 .ignoreUnknownPathExtensions(true);
     }
 
