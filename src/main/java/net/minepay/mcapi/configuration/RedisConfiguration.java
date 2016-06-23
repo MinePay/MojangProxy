@@ -1,8 +1,11 @@
 package net.minepay.mcapi.configuration;
 
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
+import net.minepay.mcapi.mojang.cache.JacksonRedisSerializer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.List;
 
@@ -70,6 +74,8 @@ public class RedisConfiguration {
     public RedisTemplate<String, Profile> profileRedisTemplate() {
         RedisTemplate<String, Profile> template = new RedisTemplate<>();
         template.setConnectionFactory(this.redisConnectionFactory());
+        template.setDefaultSerializer(new JacksonRedisSerializer<>(Profile.class));
+        template.setKeySerializer(new StringRedisSerializer());
         return template;
     }
 
@@ -83,6 +89,8 @@ public class RedisConfiguration {
     public RedisTemplate<String, ProfileName> identifierRedisTemplate() {
         RedisTemplate<String, ProfileName> template = new RedisTemplate<>();
         template.setConnectionFactory(this.redisConnectionFactory());
+        template.setDefaultSerializer(new JacksonRedisSerializer<>(ProfileName.class));
+        template.setKeySerializer(new StringRedisSerializer());
         return template;
     }
 
@@ -96,6 +104,8 @@ public class RedisConfiguration {
     public RedisTemplate<String, List<ProfileNameChange>> nameHistoryRedisTemplate() {
         RedisTemplate<String, List<ProfileNameChange>> template = new RedisTemplate<>();
         template.setConnectionFactory(this.redisConnectionFactory());
+        template.setDefaultSerializer(new JacksonRedisSerializer<>(TypeFactory.defaultInstance().constructCollectionType(List.class, ProfileNameChange.class)));
+        template.setKeySerializer(new StringRedisSerializer());
         return template;
     }
 }
