@@ -10,15 +10,16 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Provides a simple Jackson based serialization interface.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
+@ThreadSafe
 public class JacksonRedisSerializer<T> implements RedisSerializer<T> {
     private final ObjectReader reader;
     private final ObjectWriter writer;
