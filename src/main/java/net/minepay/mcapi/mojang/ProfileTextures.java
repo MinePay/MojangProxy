@@ -1,6 +1,7 @@
 package net.minepay.mcapi.mojang;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +24,7 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @Immutable
 @ThreadSafe
+@JsonIgnoreProperties("signatureRequired")
 public class ProfileTextures {
     private final Instant timestamp;
     private final String profileId;

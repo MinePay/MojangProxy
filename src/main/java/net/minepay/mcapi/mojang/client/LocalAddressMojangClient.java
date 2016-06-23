@@ -109,7 +109,7 @@ public class LocalAddressMojangClient implements MojangClient {
     public Profile findProfile(@Nonnull String identifier) throws IOException {
         this.requestCount.incrementAndGet();
 
-        HttpGet request = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/" + identifier);
+        HttpGet request = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/" + identifier + "?unsigned=false");
         HttpResponse response = this.client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {
