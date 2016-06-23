@@ -1,6 +1,8 @@
 package net.minepay.mcapi.configuration;
 
 import net.minepay.mcapi.mojang.Profile;
+import net.minepay.mcapi.mojang.ProfileName;
+import net.minepay.mcapi.mojang.ProfileNameChange;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -65,6 +69,32 @@ public class RedisConfiguration {
     @Nonnull
     public RedisTemplate<String, Profile> profileRedisTemplate() {
         RedisTemplate<String, Profile> template = new RedisTemplate<>();
+        template.setConnectionFactory(this.redisConnectionFactory());
+        return template;
+    }
+
+    /**
+     * Provides a Redis template for profile name objects.
+     *
+     * @return a template.
+     */
+    @Bean
+    @Nonnull
+    public RedisTemplate<String, ProfileName> identifierRedisTemplate() {
+        RedisTemplate<String, ProfileName> template = new RedisTemplate<>();
+        template.setConnectionFactory(this.redisConnectionFactory());
+        return template;
+    }
+
+    /**
+     * Provides a Redis template for name change histories.
+     *
+     * @return a template.
+     */
+    @Bean
+    @Nonnull
+    public RedisTemplate<String, List<ProfileNameChange>> nameHistoryRedisTemplate() {
+        RedisTemplate<String, List<ProfileNameChange>> template = new RedisTemplate<>();
         template.setConnectionFactory(this.redisConnectionFactory());
         return template;
     }
