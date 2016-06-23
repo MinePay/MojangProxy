@@ -52,7 +52,6 @@ public class NameController {
     @RequestMapping(path = "/{name}", method = RequestMethod.GET)
     public ProfileName lookupIdentifier(@Nonnull @PathVariable("name") String name, @Nullable @RequestParam(name = "at", required = false) Instant timestamp) throws IOException {
         ProfileName identifier;
-        name = name.toLowerCase();
 
         if (timestamp != null) {
             identifier = this.cache.findIdentifier(name, timestamp);

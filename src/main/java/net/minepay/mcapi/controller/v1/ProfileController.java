@@ -61,7 +61,6 @@ public class ProfileController {
             name = Profile.convertIdentifier(UUID.fromString(name));
         }
 
-        name = name.toLowerCase();
         Profile profile = this.cache.findProfile(name);
 
         if (profile == null) {
@@ -81,11 +80,9 @@ public class ProfileController {
 
     /**
      * Attempts to find a profile based on a username.
-     *
-     * @param name      a name.
+     * @param name a name.
      * @param timestamp a timestamp.
      * @return a profile.
-     *
      * @throws IOException when requesting data from the Mojang API fails.
      */
     @Nonnull
