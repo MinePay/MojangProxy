@@ -26,6 +26,13 @@ public interface MojangCache {
     Profile findProfile(@Nonnull String identifier);
 
     /**
+     * Saves a fetched profile to the backing cache.
+     *
+     * @param profile a profile.
+     */
+    void saveProfile(@Nonnull Profile profile);
+
+    /**
      * Retrieves an identifier from the application cache.
      *
      * @param name a display name.
@@ -35,6 +42,13 @@ public interface MojangCache {
     ProfileName findIdentifier(@Nonnull String name);
 
     /**
+     * Saves a fetched profile identifier to the backing cache.
+     *
+     * @param name an identifier.
+     */
+    void saveIdentifier(@Nonnull ProfileName name);
+
+    /**
      * Retrieves a history of name changes for the specified profile.
      *
      * @param identifier a profile identifier.
@@ -42,4 +56,12 @@ public interface MojangCache {
      */
     @Nullable
     List<ProfileNameChange> findNameHistory(@Nonnull String identifier);
+
+    /**
+     * Saves a fetched name history to the backing cache.
+     *
+     * @param identifier  a profile identifier.
+     * @param nameChanges a set of name changes.
+     */
+    void saveNameHistory(@Nonnull String identifier, @Nonnull List<ProfileNameChange> nameChanges);
 }
