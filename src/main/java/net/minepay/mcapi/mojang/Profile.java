@@ -57,7 +57,7 @@ public class Profile {
      * @return an identifier.
      */
     @Nonnull
-    static String convertIdentifier(@Nonnull UUID uuid) {
+    public static String convertIdentifier(@Nonnull UUID uuid) {
         return uuid.toString().replaceAll("-", "");
     }
 
@@ -68,7 +68,7 @@ public class Profile {
      * @return a UUID.
      */
     @Nonnull
-    static UUID convertIdentifier(@Nonnull String identifier) {
+    public static UUID convertIdentifier(@Nonnull String identifier) {
         final Matcher matcher;
         if ((matcher = MOJANG_UUID_PATTERN.matcher(identifier)).matches()) {
             identifier = matcher.replaceFirst("$1-$2-$3-$4-$5");
@@ -83,7 +83,7 @@ public class Profile {
      * @param identifier an identifier.
      * @return true if value is a valid Mojang identifier or UUID, false otherwise.
      */
-    static boolean isValidIdentifier(@Nonnull String identifier) {
+    public static boolean isValidIdentifier(@Nonnull String identifier) {
         return isValidMojangIdentifier(identifier) || isValidUUID(identifier);
     }
 
@@ -93,7 +93,7 @@ public class Profile {
      * @param identifier an identifier.
      * @return true if valid, false otherwise.
      */
-    static boolean isValidMojangIdentifier(@Nonnull String identifier) {
+    public static boolean isValidMojangIdentifier(@Nonnull String identifier) {
         return MOJANG_UUID_PATTERN.matcher(identifier).matches();
     }
 
@@ -103,7 +103,7 @@ public class Profile {
      * @param identifier a uuid.
      * @return true if valid, false otherwise.
      */
-    static boolean isValidUUID(@Nonnull String identifier) {
+    public static boolean isValidUUID(@Nonnull String identifier) {
         return UUID_PATTERN.matcher(identifier).matches();
     }
 
