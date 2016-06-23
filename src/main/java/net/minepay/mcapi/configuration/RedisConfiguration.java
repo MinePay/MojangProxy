@@ -56,6 +56,7 @@ public class RedisConfiguration {
         connectionFactory.setHostName(this.hostname);
         connectionFactory.setPort(this.portNumber);
         connectionFactory.setDatabase(this.databaseNumber);
+        connectionFactory.setUsePool(true);
 
         if (this.password != null && !this.password.isEmpty()) {
             connectionFactory.setPassword(this.password);
