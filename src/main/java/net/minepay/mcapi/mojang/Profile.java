@@ -2,6 +2,8 @@ package net.minepay.mcapi.mojang;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,11 +25,20 @@ import javax.annotation.concurrent.ThreadSafe;
 @Immutable
 @ThreadSafe
 public class Profile {
+    public static final ObjectReader reader;
+
     private static final Pattern MOJANG_UUID_PATTERN = Pattern.compile("^([A-F0-9]{8})([A-F0-9]{4})([01-5][0-9A-F]{3})([089AB][0-9A-F]{3})([A-F0-9]{12})$", Pattern.CASE_INSENSITIVE);
     private static final Pattern UUID_PATTERN = Pattern.compile("^([A-F0-9]{8})-([A-F0-9]{4})-([01-5][0-9A-F]{3})-([089AB][0-9A-F]{3})-([A-F0-9]{12})$", Pattern.CASE_INSENSITIVE);
     private final String id;
     private final String name;
     private final List<ProfileProperty> properties;
+
+    static {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
+
+        reader = mapper.reader();
+    }
 
     public Profile(@Nonnull @JsonProperty("id") String id, @Nonnull @JsonProperty("name") String name, @Nonnull @JsonProperty("properties") List<JsonNode> properties) throws IOException {
         this.id = id;
@@ -41,7 +52,11 @@ public class Profile {
                 String signature = (node.has("signature") ? node.get("signature").asText() : null);
 
                 if ("textures".equalsIgnoreCase(propertyName)) {
-                    profileProperties.add(new ProfileProperty<>(propertyName, ProfileTextures.fromBaseString(value.asText()), signature));
+                    if (value.isObject()) {
+                        profileProperties.add(new ProfileProperty<ProfileTextures>(propertyName, reader.forType(ProfileTextures.class).readValue(value), signature));
+                    } else {
+                        profileProperties.add(new ProfileProperty<>(propertyName, ProfileTextures.fromBaseString(value.asText()), signature));
+                    }
                 } else {
                     profileProperties.add(new ProfileProperty<>(propertyName, value.asText(), signature));
                 }
