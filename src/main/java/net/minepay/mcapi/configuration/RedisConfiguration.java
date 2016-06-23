@@ -1,5 +1,7 @@
 package net.minepay.mcapi.configuration;
 
+import net.minepay.mcapi.mojang.Profile;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,14 +57,14 @@ public class RedisConfiguration {
     }
 
     /**
-     * Provides a Redis template.
+     * Provides a Redis template for Profile objects.
      *
      * @return a template.
      */
     @Bean
     @Nonnull
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, Profile> profileRedisTemplate() {
+        RedisTemplate<String, Profile> template = new RedisTemplate<>();
         template.setConnectionFactory(this.redisConnectionFactory());
         return template;
     }
