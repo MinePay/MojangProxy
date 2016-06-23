@@ -4,6 +4,7 @@ import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
 
+import java.time.Instant;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -42,11 +43,29 @@ public interface MojangCache {
     ProfileName findIdentifier(@Nonnull String name);
 
     /**
+     * Retrieves an identifier from the application cache.
+     *
+     * @param name      a display name.
+     * @param timestamp a timestamp.
+     * @return an identifier or, if no cached version could be located, null.
+     */
+    @Nullable
+    ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp);
+
+    /**
      * Saves a fetched profile identifier to the backing cache.
      *
      * @param name an identifier.
      */
     void saveIdentifier(@Nonnull ProfileName name);
+
+    /**
+     * Saves a fetched profile identifier to the backing cache.
+     *
+     * @param name      an identifier.
+     * @param timestamp a timestamp.
+     */
+    void saveIdentifier(@Nonnull ProfileName name, @Nonnull Instant timestamp);
 
     /**
      * Retrieves a history of name changes for the specified profile.
