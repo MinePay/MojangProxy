@@ -1,5 +1,8 @@
 package net.minepay.mcapi.mojang.client.error;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import java.io.IOException;
 
 /**
@@ -7,6 +10,7 @@ import java.io.IOException;
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
+@ResponseStatus(HttpStatus.BAD_GATEWAY)
 public class InterfaceException extends IOException {
 
     public InterfaceException() {
