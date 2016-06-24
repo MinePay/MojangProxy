@@ -77,6 +77,7 @@ public class PooledMojangClient implements MojangClient {
                 this.clientIndex.compareAndSet(index, 0);
             }
 
+            client.resetRateLimit();
             client = this.clients.get(index);
         }
 

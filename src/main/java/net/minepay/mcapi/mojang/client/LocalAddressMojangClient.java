@@ -113,7 +113,8 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpResponse response = this.client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {
-            case 200: break;
+            case 200:
+                break;
             case 204:
                 return null;
             case 429:
@@ -148,7 +149,8 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpResponse response = this.client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {
-            case 200: break;
+            case 200:
+                break;
             case 204:
                 return null;
             case 429:
@@ -174,7 +176,8 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpResponse response = this.client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {
-            case 200: break;
+            case 200:
+                break;
             case 204:
                 return null;
             case 429:
@@ -210,7 +213,8 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpResponse response = this.client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {
-            case 200: break;
+            case 200:
+                break;
             case 204:
                 return null;
             case 429:
@@ -236,7 +240,8 @@ public class LocalAddressMojangClient implements MojangClient {
         HttpResponse response = this.client.execute(request);
 
         switch (response.getStatusLine().getStatusCode()) {
-            case 200: break;
+            case 200:
+                break;
             case 204:
                 return null;
             case 429:
@@ -296,5 +301,12 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nonnegative
     int getRequestCount() {
         return this.requestCount.get();
+    }
+
+    /**
+     * Resets the rate limitation.
+     */
+    public void resetRateLimit() {
+        this.requestCount.set(0);
     }
 }
