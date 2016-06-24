@@ -1,3 +1,7 @@
+server:
+  jetty:
+    acceptors: 8
+    selectors: 8
 redis:
   hostname: redis.torchmind.local
   port: 6379
