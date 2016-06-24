@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnegative;
@@ -109,7 +110,7 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public Profile findProfile(@Nonnull String identifier) throws IOException {
-        this.requestCount.incrementAndGet();
+        this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/" + identifier + "?unsigned=false");
         HttpResponse response = this.client.execute(request);
@@ -145,7 +146,7 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public ProfileName findIdentifier(@Nonnull String name) throws IOException {
-        this.requestCount.incrementAndGet();
+        this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8"));
         HttpResponse response = this.client.execute(request);
@@ -172,7 +173,7 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) throws IOException {
-        this.requestCount.incrementAndGet();
+        this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8") + "?at=" + timestamp.getEpochSecond());
         HttpResponse response = this.client.execute(request);
@@ -199,7 +200,7 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileName> findIdentifier(@Nonnull List<String> names) throws IOException {
-        this.requestCount.incrementAndGet();
+        this.updateRequestCount();
 
         HttpPost request = new HttpPost("https://api.mojang.com/profiles/minecraft");
         {
@@ -236,7 +237,7 @@ public class LocalAddressMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileNameChange> getNameHistory(@Nonnull String identifier) throws IOException {
-        this.requestCount.incrementAndGet();
+        this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://api.mojang.com/user/profiles/" + identifier + "/names");
         HttpResponse response = this.client.execute(request);
@@ -310,5 +311,13 @@ public class LocalAddressMojangClient implements MojangClient {
      */
     public void resetRateLimit() {
         this.requestCount.set(0);
+    }
+
+    /**
+     * Updates the request counter.
+     */
+    private void updateRequestCount() {
+        this.requestCount.incrementAndGet();
+        this.requestCount.expire(10, TimeUnit.MINUTES);
     }
 }
