@@ -8,7 +8,10 @@ import net.minepay.mcapi.mojang.ProfileNameChange;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,7 +41,8 @@ public class PooledMojangClient implements MojangClient {
     private final List<LocalAddressMojangClient> clients;
     private final AtomicInteger clientIndex = new AtomicInteger(0);
 
-    public PooledMojangClient() throws IOException {
+    @Autowired
+    public PooledMojangClient(@Nonnull RedisTemplate<String, Integer> rateLimitRedisTemplate) throws IOException {
         try (InputStream inputStream = new FileInputStream("addresses.json")) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.findAndRegisterModules();
@@ -48,9 +52,9 @@ public class PooledMojangClient implements MojangClient {
             addresses.forEach((a, l) -> {
                 try {
                     if (a.contains("-")) {
-                        (new AddressRange(a)).forEach((addr) -> clients.add(new LocalAddressMojangClient(addr, l)));
+                        (new AddressRange(a)).forEach((addr) -> clients.add(new LocalAddressMojangClient(addr, l, new RedisAtomicInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate))));
                     } else {
-                        clients.add(new LocalAddressMojangClient(InetAddress.getByName(a), l));
+                        clients.add(new LocalAddressMojangClient(InetAddress.getByName(a), l, new RedisAtomicInteger("address:" + a, rateLimitRedisTemplate)));
                     }
                 } catch (UnknownHostException ex) {
                     throw new IllegalArgumentException("Could not bind to local address: " + ex.getMessage(), ex);

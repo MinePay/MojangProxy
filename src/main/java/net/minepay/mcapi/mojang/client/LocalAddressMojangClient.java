@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -77,11 +78,12 @@ public class LocalAddressMojangClient implements MojangClient {
     private final InetAddress address;
     private final HttpClient client;
     private final int requestLimitation;
-    private final AtomicInteger requestCount = new AtomicInteger(0);
+    private final RedisAtomicInteger requestCount;
 
-    public LocalAddressMojangClient(@Nonnull InetAddress address, @Nonnegative int requestLimitation) {
+    public LocalAddressMojangClient(@Nonnull InetAddress address, @Nonnegative int requestLimitation, @Nonnull RedisAtomicInteger requestCount) {
         this.address = address;
         this.requestLimitation = requestLimitation;
+        this.requestCount = requestCount;
 
         PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager();
         manager.setMaxTotal(128); // Maximum amount of cached connections

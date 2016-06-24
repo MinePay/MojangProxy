@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.List;
@@ -117,6 +118,22 @@ public class RedisConfiguration {
         RedisTemplate<String, List<ProfileNameChange>> template = new RedisTemplate<>();
         template.setConnectionFactory(this.redisConnectionFactory());
         template.setDefaultSerializer(new JacksonRedisSerializer<>(TypeFactory.defaultInstance().constructCollectionType(List.class, ProfileNameChange.class)));
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setEnableTransactionSupport(true);
+        return template;
+    }
+
+    /**
+     * Provides a redis template for rate limits.
+     *
+     * @return a template.
+     */
+    @Bean
+    @Nonnull
+    public RedisTemplate<String, Integer> rateLimitRedisTemplate() {
+        RedisTemplate<String, Integer> template = new RedisTemplate<>();
+        template.setConnectionFactory(this.redisConnectionFactory());
+        template.setDefaultSerializer(new GenericToStringSerializer<>(Integer.class));
         template.setKeySerializer(new StringRedisSerializer());
         template.setEnableTransactionSupport(true);
         return template;
