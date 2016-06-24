@@ -2,6 +2,12 @@
   "name":            "mcapi-frontend",
   "version":         "0.0.1",
   "private":         true,
+  "scripts":         {
+    "build":       "gulp build",
+    "start":       "gulp development",
+    "postinstall": "typings install",
+    "typings":     "typings"
+  },
   "devDependencies": {
     "babel":               "^6.5.2",
     "babel-preset-es2015": "^6.9.0",
