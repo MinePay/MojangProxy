@@ -1,6 +1,7 @@
 package net.minepay.mcapi.mojang.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -27,6 +28,7 @@ public class JacksonRedisSerializer<T> implements RedisSerializer<T> {
     public JacksonRedisSerializer(@Nonnull Class<T> type) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         this.reader = mapper.readerFor(type);
         this.writer = mapper.writerFor(type);
