@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
-import net.minepay.mcapi.mojang.ProfileNameChange;
 import net.minepay.mcapi.mojang.client.error.InterfaceException;
+import net.minepay.mcapi.mojang.Profile;
+import net.minepay.mcapi.mojang.ProfileNameChange;
 import net.minepay.mcapi.mojang.client.error.RateLimitExceededException;
 
 import org.apache.http.HttpResponse;
@@ -30,7 +30,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;

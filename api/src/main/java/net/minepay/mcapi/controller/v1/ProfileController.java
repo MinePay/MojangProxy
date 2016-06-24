@@ -1,11 +1,11 @@
 package net.minepay.mcapi.controller.v1;
 
 import net.minepay.mcapi.controller.error.NoSuchProfileException;
-import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
 import net.minepay.mcapi.mojang.client.MojangClient;
 import net.minepay.mcapi.repository.MojangCache;
+import net.minepay.mcapi.mojang.Profile;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,8 +1,8 @@
 package net.minepay.mcapi.repository;
 
 import net.minepay.mcapi.configuration.CacheConfiguration;
-import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
+import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileNameChange;
 
 import org.springframework.beans.factory.annotation.Autowired;

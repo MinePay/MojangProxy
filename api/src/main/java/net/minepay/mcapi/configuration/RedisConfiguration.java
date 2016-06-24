@@ -2,10 +2,10 @@ package net.minepay.mcapi.configuration;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
-import net.minepay.mcapi.mojang.ProfileNameChange;
 import net.minepay.mcapi.mojang.cache.JacksonRedisSerializer;
+import net.minepay.mcapi.mojang.Profile;
+import net.minepay.mcapi.mojang.ProfileNameChange;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
