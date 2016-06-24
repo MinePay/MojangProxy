@@ -37,6 +37,7 @@ public class JacksonRedisSerializer<T> implements RedisSerializer<T> {
     public JacksonRedisSerializer(@Nonnull JavaType type) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         this.reader = mapper.readerFor(type);
         this.writer = mapper.writerFor(type);
