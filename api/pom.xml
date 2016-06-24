@@ -97,7 +97,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.minepay.net.minepay.mcapi.MojangProxy</mainClass>
+                            <mainClass>net.minepay.mcapi.MojangProxy</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
