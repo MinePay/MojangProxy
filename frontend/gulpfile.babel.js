@@ -29,7 +29,7 @@ gulp.task('clean', (cb) => {
  * Copies all NPM libraries, which are required for browser side execution, into the distribution
  * directory.
  */
-gulp.task('libraries', () => {
+gulp.task('libraries', ['materialize'], () => {
     return gulp.src(
         [
             'node_modules/es6-shim/es6-shim.min.js',
@@ -45,6 +45,21 @@ gulp.task('libraries', () => {
             'node_modules/jquery/dist/jquery.min.map'
         ])
         .pipe(gulp.dest('dist/assets/3rdParty'));
+});
+
+gulp.task('materialize', () => {
+    return gulp.src(
+        [
+            '**',
+            '!font',
+            '!font/**',
+            '!css/materialize.css',
+            '!js/materialize.js'
+        ],
+        {
+            cwd: 'node_modules/materialize-css/dist/'
+        })
+        .pipe(gulp.dest('dist/assets/3rdParty/materialize'))
 });
 
 /**
