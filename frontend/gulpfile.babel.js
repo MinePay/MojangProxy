@@ -14,7 +14,7 @@ const typescriptProject = tsc.createProject(path.join(__dirname, 'tsconfig.json'
 
 // Collection Tasks
 gulp.task('default', sequence('clean', 'build'));
-gulp.task('development', sequence('clean', 'serve'));
+gulp.task('development', sequence('clean', 'build', 'serve'));
 gulp.task('build', ['libraries', 'typescript', 'template']);
 
 /**
@@ -91,4 +91,15 @@ gulp.task('template', () => {
                          }))
         .pipe(gulp.dest(path.join(__dirname, 'dist/')))
         .pipe(sync.stream());
+});
+
+/**
+ * Serves a browser-sync instance suited for quick development.
+ */
+gulp.task('serve', () => {
+    sync.init({server: path.join(__dirname, 'dist/')});
+
+    // create watchers to automatically run our tasks when needed
+    gulp.watch(path.join(__dirname, 'src/script/**/*.ts'), ['typescript']);
+    gulp.watch(path.join(__dirname, 'src/template/*.html'), ['template']);
 });
