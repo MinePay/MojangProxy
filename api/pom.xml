@@ -13,7 +13,7 @@
 
     <!-- Artifact Information -->
     <artifactId>api</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <!-- Dependencies -->
     <dependencies>
@@ -35,6 +35,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -94,6 +95,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>make-a-jar</id>
+                        <phase>compile</phase>
+
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
                 <configuration>
                     <archive>
                         <manifest>

@@ -157,6 +157,17 @@
                     </configuration>
                 </plugin>
 
+                <!-- WAR Creation -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.6</version>
+
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+
                 <!-- Spring Boot -->
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
