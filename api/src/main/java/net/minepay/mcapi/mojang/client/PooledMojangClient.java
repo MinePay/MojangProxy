@@ -7,8 +7,8 @@ import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -40,7 +40,7 @@ public class PooledMojangClient implements MojangClient {
     private final AtomicInteger clientIndex = new AtomicInteger(0);
 
     @Autowired
-    public PooledMojangClient(@Nonnull RedisTemplate<String, Integer> rateLimitRedisTemplate) throws IOException {
+    public PooledMojangClient(@Nonnull RedisTemplate<String, Integer> rateLimitRedisTemplate, @Nonnull TaskExecutor taskExecutor) throws IOException {
         try (InputStream inputStream = new FileInputStream("addresses.json")) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.findAndRegisterModules();
@@ -50,9 +50,9 @@ public class PooledMojangClient implements MojangClient {
             addresses.forEach((a, l) -> {
                 try {
                     if (a.contains("-")) {
-                        (new AddressRange(a)).forEach((addr) -> clients.add(new LocalAddressMojangClient(addr, l, new RedisAtomicInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate))));
+                        (new AddressRange(a)).forEach((addr) -> clients.add(new LocalAddressMojangClient(addr, l, new CachingRedisAtomicInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate, taskExecutor))));
                     } else {
-                        clients.add(new LocalAddressMojangClient(InetAddress.getByName(a), l, new RedisAtomicInteger("address:" + a, rateLimitRedisTemplate)));
+                        clients.add(new LocalAddressMojangClient(InetAddress.getByName(a), l, new CachingRedisAtomicInteger("address:" + a, rateLimitRedisTemplate, taskExecutor)));
                     }
                 } catch (UnknownHostException ex) {
                     throw new IllegalArgumentException("Could not bind to local address: " + ex.getMessage(), ex);

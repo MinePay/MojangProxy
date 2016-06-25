@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import net.minepay.mcapi.mojang.ProfileName;
-import net.minepay.mcapi.mojang.client.error.InterfaceException;
 import net.minepay.mcapi.mojang.Profile;
+import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
+import net.minepay.mcapi.mojang.client.error.InterfaceException;
 import net.minepay.mcapi.mojang.client.error.RateLimitExceededException;
 
 import org.apache.http.HttpResponse;
@@ -19,7 +19,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -81,9 +79,9 @@ public class LocalAddressMojangClient implements MojangClient {
     private final InetAddress address;
     private final HttpClient client;
     private final int requestLimitation;
-    private final RedisAtomicInteger requestCount;
+    private final CachingRedisAtomicInteger requestCount;
 
-    public LocalAddressMojangClient(@Nonnull InetAddress address, @Nonnegative int requestLimitation, @Nonnull RedisAtomicInteger requestCount) {
+    public LocalAddressMojangClient(@Nonnull InetAddress address, @Nonnegative int requestLimitation, @Nonnull CachingRedisAtomicInteger requestCount) {
         this.address = address;
         this.requestLimitation = requestLimitation;
         this.requestCount = requestCount;
@@ -312,14 +310,13 @@ public class LocalAddressMojangClient implements MojangClient {
      * Resets the rate limitation.
      */
     public void resetRateLimit() {
-        this.requestCount.set(0);
+        this.requestCount.reset();
     }
 
     /**
      * Updates the request counter.
      */
     private void updateRequestCount() {
-        this.requestCount.incrementAndGet();
-        this.requestCount.expire(10, TimeUnit.MINUTES);
+        this.requestCount.increment();
     }
 }
