@@ -44,7 +44,7 @@ gulp.task('libraries', () => {
             'node_modules/jquery/dist/jquery.min.js',
             'node_modules/jquery/dist/jquery.min.map'
         ])
-        .pipe(gulp.dest('dist/assets/script'));
+        .pipe(gulp.dest('dist/assets/3rdParty'));
 });
 
 /**
