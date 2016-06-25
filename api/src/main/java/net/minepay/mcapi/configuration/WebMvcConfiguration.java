@@ -1,10 +1,15 @@
 package net.minepay.mcapi.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -19,8 +24,29 @@ import javax.annotation.Nonnull;
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
+@EnableAsync
 @Configuration
 public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
+    @Value("${executor.base-pool-size:2}")
+    private int basePoolSize;
+    @Value("${executor.max-pool-size:12}")
+    private int maxPoolSize;
+    @Value("${executor.keep-alive:3}")
+    private int keepAliveSize;
+
+    /**
+     * Provides a pooled task executor.
+     * @return an executor.
+     */
+    @Bean
+    @Nonnull
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(this.basePoolSize);
+        executor.setMaxPoolSize(this.maxPoolSize);
+        executor.setKeepAliveSeconds(this.keepAliveSize);
+        return executor;
+    }
 
     /**
      * {@inheritDoc}

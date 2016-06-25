@@ -8,6 +8,10 @@ redis:
   database-number: 1
   password:
   pool-size: 8
+executor:
+  base-pool-size: 2
+  max-pool-size: 24
+  keep-alive: 3
 cache:
   profileCacheTime: 86400
   nameCacheTime: 3024000
