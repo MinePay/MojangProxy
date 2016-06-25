@@ -36,6 +36,7 @@ gulp.task('libraries', ['materialize'], () => {
             'systemjs/dist/system-polyfills.js',
             'systemjs/dist/system.src.js',
             'reflect-metadata/Reflect.js',
+            'symbol-observable/**',
             'rxjs/**',
             'zone.js/dist/**',
             '@angular/**'
@@ -106,6 +107,6 @@ gulp.task('serve', () => {
 
     // create watchers to automatically run our tasks when needed
     gulp.watch(path.join(__dirname, 'src/script/**/*.ts'), ['typescript']);
-    gulp.watch(path.join(__dirname, 'src/script/**/*.script'), ['script']);
+    gulp.watch(path.join(__dirname, 'src/script/**/*.js'), ['script']);
     gulp.watch(path.join(__dirname, 'src/template/*.html'), ['template']);
 });

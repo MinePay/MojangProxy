@@ -3,13 +3,15 @@
     var map = {
         'app':      'assets/script',
         'rxjs':     'assets/lib/rxjs',
+        'symbol-observable': 'assets/lib/symbol-observable',
         '@angular': 'assets/lib/@angular'
     };
 
     // packages tells the System loader how to load when no filename and/or no extension
     var packages = {
         'app':  {main: 'main.js', defaultExtension: 'js'},
-        'rxjs': {defaultExtension: 'js'}
+        'rxjs': {defaultExtension: 'js'},
+        'symbol-observable': {main: 'index.js', defaultExtension: 'js'}
     };
 
     var packageNames = [
