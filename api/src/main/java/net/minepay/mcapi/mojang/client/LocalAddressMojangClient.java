@@ -1,5 +1,6 @@
 package net.minepay.mcapi.mojang.client;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -70,6 +71,8 @@ public class LocalAddressMojangClient implements MojangClient {
         {
             ObjectMapper mapper = new ObjectMapper();
             mapper.findAndRegisterModules();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
             reader = mapper.reader();
             writer = mapper.writer();
         }
