@@ -8,6 +8,7 @@ import net.minepay.mcapi.mojang.ProfileNameChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,7 @@ public class MojangCacheImpl implements MojangCache {
     /**
      * {@inheritDoc}
      */
+    @Async
     @Override
     @Transactional("profileRedisTemplate")
     public void saveProfile(@Nonnull Profile profile) {
@@ -92,6 +94,7 @@ public class MojangCacheImpl implements MojangCache {
     /**
      * {@inheritDoc}
      */
+    @Async
     @Override
     @Transactional("identifierRedisTemplate")
     public void saveIdentifier(@Nonnull ProfileName name, @Nonnull Instant timestamp) {
@@ -103,6 +106,7 @@ public class MojangCacheImpl implements MojangCache {
     /**
      * {@inheritDoc}
      */
+    @Async
     @Override
     @Transactional("identifierRedisTemplate")
     public void saveIdentifier(@Nonnull ProfileName name) {
@@ -124,6 +128,7 @@ public class MojangCacheImpl implements MojangCache {
     /**
      * {@inheritDoc}
      */
+    @Async
     @Override
     @Transactional("nameHistoryRedisTemplate")
     public void saveNameHistory(@Nonnull String identifier, @Nonnull List<ProfileNameChange> nameChanges) {
