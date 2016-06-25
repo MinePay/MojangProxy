@@ -32,19 +32,18 @@ gulp.task('clean', (cb) => {
 gulp.task('libraries', ['materialize'], () => {
     return gulp.src(
         [
-            'node_modules/es6-shim/es6-shim.min.js',
-            'node_modules/systemjs/dist/system-polyfills.js',
-            'node_modules/angular2/bundles/angular2-polyfills.js',
-            'node_modules/angular2/es6/dev/src/testing/shims_for_IE.js',
-            'node_modules/systemjs/dist/system.js',
-            'node_modules/rxjs/bundles/Rx.js',
-            'node_modules/angular2/bundles/angular2.js',
-            'node_modules/angular2/bundles/angular2-polyfills.js',
-            'node_modules/angular2/bundles/router.js',
-            'node_modules/jquery/dist/jquery.min.js',
-            'node_modules/jquery/dist/jquery.min.map'
-        ])
-        .pipe(gulp.dest('dist/assets/3rdParty'));
+            'es6-shim/es6-shim.min.js',
+            'systemjs/dist/system-polyfills.js',
+            'systemjs/dist/system.src.js',
+            'reflect-metadata/Reflect.js',
+            'rxjs/**',
+            'zone.js/dist/**',
+            '@angular/**'
+        ],
+        {
+            cwd: 'node_modules/**'
+        })
+        .pipe(gulp.dest('dist/assets/lib'));
 });
 
 gulp.task('materialize', () => {
@@ -59,18 +58,24 @@ gulp.task('materialize', () => {
         {
             cwd: 'node_modules/materialize-css/dist/'
         })
-        .pipe(gulp.dest('dist/assets/3rdParty/materialize'))
+        .pipe(gulp.dest('dist/assets/materialize'))
 });
 
 /**
  * Compiles and optimizes all TypeScript sources.
  */
-gulp.task('typescript', () => {
+gulp.task('typescript', ['script'], () => {
     return gulp.src(path.join(__dirname, 'src/script/**/*.ts'))
         .pipe(sourcemaps.init())
         .pipe(tsc(typescriptProject))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(path.join(__dirname, 'dist/assets/script/')))
+        .pipe(sync.stream());
+});
+
+gulp.task('script', () => {
+    return gulp.src(path.join(__dirname, 'src/script/**/*.js'))
         .pipe(gulp.dest(path.join(__dirname, 'dist/assets/script/')))
         .pipe(sync.stream());
 });
@@ -101,5 +106,6 @@ gulp.task('serve', () => {
 
     // create watchers to automatically run our tasks when needed
     gulp.watch(path.join(__dirname, 'src/script/**/*.ts'), ['typescript']);
+    gulp.watch(path.join(__dirname, 'src/script/**/*.script'), ['script']);
     gulp.watch(path.join(__dirname, 'src/template/*.html'), ['template']);
 });
