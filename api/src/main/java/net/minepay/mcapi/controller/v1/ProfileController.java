@@ -4,7 +4,7 @@ import net.minepay.mcapi.controller.error.NoSuchProfileException;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
 import net.minepay.mcapi.mojang.client.MojangClient;
-import net.minepay.mcapi.repository.MojangCache;
+import net.minepay.mcapi.mojang.cache.MojangCache;
 import net.minepay.mcapi.mojang.Profile;
 
 import org.springframework.beans.factory.annotation.Autowired;

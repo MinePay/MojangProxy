@@ -1,4 +1,4 @@
-package net.minepay.mcapi.repository;
+package net.minepay.mcapi.mojang.cache;
 
 import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;

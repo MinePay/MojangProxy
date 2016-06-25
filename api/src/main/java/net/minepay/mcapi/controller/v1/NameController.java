@@ -3,7 +3,7 @@ package net.minepay.mcapi.controller.v1;
 import net.minepay.mcapi.controller.error.NoSuchNameException;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.client.MojangClient;
-import net.minepay.mcapi.repository.MojangCache;
+import net.minepay.mcapi.mojang.cache.MojangCache;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
