@@ -15,7 +15,7 @@ const typescriptProject = tsc.createProject(path.join(__dirname, 'tsconfig.json'
 // Collection Tasks
 gulp.task('default', sequence('clean', 'build'));
 gulp.task('development', sequence('clean', 'build', 'serve'));
-gulp.task('build', ['libraries', 'typescript', 'template']);
+gulp.task('build', ['libraries', 'image', 'typescript', 'template']);
 
 /**
  * Deletes the distribution ready version of the application in order to make space for a freshly
@@ -39,7 +39,9 @@ gulp.task('libraries', ['materialize'], () => {
             'symbol-observable/**',
             'rxjs/**',
             'zone.js/dist/**',
-            '@angular/**'
+            '@angular/**',
+            'jquery/dist/jquery.min.js',
+            'jquery/dist/jquery.min.map'
         ],
         {
             cwd: 'node_modules/**'
@@ -100,6 +102,19 @@ gulp.task('template', () => {
 });
 
 /**
+ * Copies all static images.
+ */
+gulp.task('image', () => {
+    return gulp.src(
+        [
+                        path.join(__dirname, 'src/image/*.jpg'),
+                        path.join(__dirname, 'src/image/*.svg')
+        ])
+        .pipe(gulp.dest(path.join(__dirname, 'dist/assets/image/')))
+        .pipe(sync.stream());
+});
+
+/**
  * Serves a browser-sync instance suited for quick development.
  */
 gulp.task('serve', () => {
@@ -108,5 +123,7 @@ gulp.task('serve', () => {
     // create watchers to automatically run our tasks when needed
     gulp.watch(path.join(__dirname, 'src/script/**/*.ts'), ['typescript']);
     gulp.watch(path.join(__dirname, 'src/script/**/*.js'), ['script']);
+    gulp.watch(path.join(__dirname, 'src/image/**/*.jpg'), ['image']);
+    gulp.watch(path.join(__dirname, 'src/image/**/*.svg'), ['image']);
     gulp.watch(path.join(__dirname, 'src/template/*.html'), ['template']);
 });
