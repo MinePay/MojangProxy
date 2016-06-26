@@ -91,7 +91,7 @@ public class NameController {
      * @throws IOException when requesting data from Mojang fails.
      */
     @Nonnull
-    @RequestMapping(path = "/{name}", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public List<ProfileName> lookupIdentifiers(@Nonnull @RequestBody List<String> names) throws IOException {
         if (names.size() > 100) {
             throw new IllegalArgumentException("Cannot poll more than 100 names at once");

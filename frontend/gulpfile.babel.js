@@ -42,7 +42,8 @@ gulp.task('libraries', ['materialize'], () => {
             '@angular/**',
             'jquery/dist/jquery.min.js',
             'jquery/dist/jquery.min.map',
-            'highlight.js/lib/**/*.js'
+            'highlight.js/lib/**/*.js',
+            'highlight.js/styles/*.css'
         ],
         {
             cwd: 'node_modules/**'
