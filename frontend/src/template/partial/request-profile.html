@@ -1,0 +1,44 @@
+<h4>GET /v1/profile/{identifier}</h4>
+<p>Performs a lookup for the profile of a specific player based on their globally unique profile identifier or display name at the current point in time.</p>
+
+<div class="cards">
+    <div class="card cyan darken-4">
+        <div class="card-content white-text">
+            <span class="card-title">Request</span>
+            <p>Try it yourself:</p>
+            <input type="text" [(ngModel)]="identifier" />
+                        <pre><code><span class="hljs-keyword">GET</span> <span class="hljs-string">/mojang/v1/profile/{{identifier}}</span> HTTP/1.1
+<span class="hljs-attribute">Host:</span> api.minepay.net
+<span class="hljs-attribute">Accept:</span> application/json</code></pre>
+        </div>
+    </div>
+    <div class="card cyan darken-4">
+        <div class="card-content white-text">
+            <span class="card-title">Response</span>
+            <div class="progress" *ngIf="awaitingUpdate"><div class="indeterminate"></div></div>
+            <pre><code id="request-profile" class="highlight">HTTP/1.1 200 Ok
+Content-Type: application/json;Charset=UTF-8
+
+{
+    "id":           "d71a5dac4e71443b81584389c269e44d",
+    "name":         "HighLordAkkarin",
+    "properties":   [
+        {
+            "name":         "textures",
+            "value":        {
+                "timestamp":    1466854644636,
+                "profileId":    "d71a5dac4e71443b81584389c269e44d",
+                "profileName":  "HighLordAkkarin",
+                "textures":     {
+                    "SKIN":         {
+                        "url":          "http://..."
+                    }
+                }
+            },
+            "signature":    "..."
+        }
+    ]
+}</code></pre>
+        </div>
+    </div>
+</div>
