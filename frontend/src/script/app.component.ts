@@ -1,11 +1,12 @@
 import {Component, OnInit} from "@angular/core";
+declare var highlight : any;
 
 /**
  * Provides a main application component which bootstraps the application and all of its interfaces.
  */
 @Component({
     selector:    "app",
-    template: "<router-outlet></router-outlet>"
+    templateUrl: "partial/app.html"
 })
 export class AppComponent implements OnInit {
 
@@ -14,5 +15,6 @@ export class AppComponent implements OnInit {
      */
     ngOnInit() {
         console.log("Application component initialized ...");
+        highlight();
     }
 }
