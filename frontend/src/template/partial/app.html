@@ -1,0 +1,147 @@
+<div class="section">
+    <h4>GET /</h4>
+    <p>Returns information about the current application version, codename and vendor.</p>
+
+    <div class="cards">
+        <div class="card cyan darken-4">
+            <div class="card-content white-text">
+                <span class="card-title">Request</span>
+                    <pre><code class="highlight">GET /mojang HTTP/1.1
+Host: api.minepay.net
+Accept: application/json</code></pre>
+            </div>
+        </div>
+        <div class="card cyan darken-4">
+            <div class="card-content white-text">
+                <span class="card-title">Response</span>
+                    <pre><code class="highlight">HTTP/1.1 200 Ok
+Content-Type: application/json;Charset=UTF-8
+
+{
+    "name":     "MCAPI",
+    "version":  "0.0.0-SNAPSHOT",
+    "vendor":   "Minepay"
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="divider"></div>
+<div class="section">
+    <request-profile>
+
+    </request-profile>
+</div>
+<div class="divider"></div>
+<div class="section">
+    <request-history>
+        <h4>GET /v1/profile/{identifier}/history</h4>
+        <p>Performs a lookup for the profile history of a specific player based on their globally unique profile identifier or display name at the current point in time.</p>
+
+        <div class="cards">
+            <div class="card cyan darken-4">
+                <div class="card-content white-text">
+                    <span class="card-title">Request</span>
+                        <p>Try it yourself:</p>
+                        <input type="text" value="HighLordAkkarin" />
+                        <pre><code class="highlight">GET /mojang/v1/profile/HighLordAkkarin/history HTTP/1.1
+    Host: api.minepay.net
+    Accept: application/json</code></pre>
+                </div>
+            </div>
+            <div class="card cyan darken-4">
+                <div class="card-content white-text">
+                    <span class="card-title">Response</span>
+                    <pre><code class="highlight">HTTP/1.1 200 Ok
+    Content-Type: application/json;Charset=UTF-8
+
+    [
+        {
+            "name":         "LordLorkin",
+            "changedToAt":  null
+        },
+        {
+            "name":         "HighLordAkkarin",
+            "changedToAt":  1423053791000
+        }
+    ]</code></pre>
+                </div>
+            </div>
+        </div>
+    </request-history>
+</div>
+<div class="divider"></div>
+<div class="section">
+    <request-name>
+        <h4>GET /v1/name/{name}</h4>
+        <p>Performs a lookup for the profile identifier of a specific player based on their display name at the current point or a specific point in time.</p>
+
+        <div class="cards">
+            <div class="card cyan darken-4">
+                <div class="card-content white-text">
+                    <span class="card-title">Request</span>
+                    <p>Try it yourself:</p>
+                    <input type="text" value="HighLordAkkarin" />
+                    <pre><code class="highlight">GET /mojang/v1/name/HighLordAkkarin HTTP/1.1
+Host: api.minepay.net
+Accept: application/json</code></pre>
+                </div>
+            </div>
+            <div class="card cyan darken-4">
+                <div class="card-content white-text">
+                    <span class="card-title">Response</span>
+                <pre><code class="highlight">HTTP/1.1 200 Ok
+Content-Type: application/json;Charset=UTF-8
+
+{
+    "id":   "d71a5dac4e71443b81584389c269e44d",
+    "name": "HighLordAkkarin"
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </request-name>
+</div>
+<div class="divider"></div>
+<div class="section">
+    <request-names>
+        <h4>POST /v1/name</h4>
+        <p>Performs a lookup for the profile identifiers of a list of player based on their display names at the current point in time.</p>
+
+        <div class="cards">
+            <div class="card cyan darken-4">
+                <div class="card-content white-text">
+                    <span class="card-title">Request</span>
+                        <pre><code class="highlight">POST /mojang/v1/name HTTP/1.1
+    Host: api.minepay.net
+    Accept: application/json
+    Content-Type: application/json
+
+    [
+        "HighLordAkkarin",
+        "Notch",
+        "HopefullyUnregisteredUsername"
+    ]</code></pre>
+                </div>
+            </div>
+            <div class="card cyan darken-4">
+                <div class="card-content white-text">
+                    <span class="card-title">Response</span>
+                    <pre><code class="highlight">HTTP/1.1 200 Ok
+    Content-Type: application/json;Charset=UTF-8
+
+    [
+        {
+            "id":   "d71a5dac4e71443b81584389c269e44d",
+            "name": "HighLordAkkarin"
+        },
+        {
+            "id":   "069a79f444e94726a5befca90e38aaf5",
+            "name": "Notch"
+        }
+    ]</code></pre>
+                </div>
+            </div>
+        </div>
+    </request-names>
+</div>
