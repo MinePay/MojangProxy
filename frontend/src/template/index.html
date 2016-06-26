@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--[if lte IE 6]>
+<html xmlns="http://www.w3.org/1999/xhtml" class="preIE7 preIE8 preIE9">
+<![endif]-->
+<!--[if IE 7]>
+<html xmlns="http://www.w3.org/1999/xhtml" class="preIE8 preIE9">
+<![endif]-->
+<!--[if IE 8]>
+<html xmlns="http://www.w3.org/1999/xhtml" class="preIE9">
+<![endif]-->
+<!--[if gte IE 9]>
+<!-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <!--<![endif]-->
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+        <title>Minepay Mojang API</title>
+        <meta name="description" content="A simple Mojang cache."/>
+        <meta name="keywords" content="Minepay,Mojang,API,Cache"/>
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="assets/materialize/css/materialize.min.css"/>
+        <link rel="stylesheet" type="text/css" href="assets/lib/highlight.js/styles/rainbow.css"/>
+        <style type="text/css">
+            .center-content {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .cards {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: stretch;
+            }
+
+            .cards .card {
+                width: 49%;
+            }
+
+            .card input {
+                width: 180px;
+                height: 1.3rem;
+                border-bottom-color: #c6c6c6;
+                font-family: monospace, monospace;
+            }
+
+            .card input:focus {
+                border-bottom-color: #FFFFFF !important;
+            }
+        </style>
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="assets/lib/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/materialize/js/materialize.min.js"></script>
+        <script type="text/javascript" src="assets/lib/highlight.js/lib/highlight.js"></script>
+
+        <script type="text/javascript" src="assets/lib/es6-shim/es6-shim.min.js"></script>
+
+        <script type="text/javascript" src="assets/lib/zone.js/dist/zone.js"></script>
+        <script type="text/javascript" src="assets/lib/reflect-metadata/Reflect.js"></script>
+        <script type="text/javascript" src="assets/lib/systemjs/dist/system.src.js"></script>
+
+        <script type="text/javascript" src="assets/script/systemjs.config.js"></script>
+        <script type="text/javascript">
+            // <![CDATA[
+            System.import('app').then(null, console.error.bind(console));
+
+            function highlight() {
+                (function (w) {
+                    if (!w) {
+                        console.log('Outdated browser. Skipping code highlighting.');
+                        return;
+                    }
+
+                    $('code.highlight').each(function (i, e) {
+                        const worker = new w('assets/script/code.worker.js');
+
+                        worker.onmessage = function (event) {
+                            $(e).html(event.data);
+                        };
+
+                        worker.postMessage($(e).text());
+                    });
+                })(window.Worker);
+            }
+
+            $(document).ready(function () {
+                $('.parallax').parallax();
+            });
+            // ]]>
+        </script>
+    </head>
+    <body>
+        <nav class="white" role="navigation">
+            <div class="nav wrapper container">
+                <a id="logo-container" href="#" class="brand-logo">
+                    <img src="assets/image/logo.svg" style="height: 25px" alt=""/>
+                </a>
+            </div>
+        </nav>
+        <header class="parallax-container" style="color: #FFFFFF; height: 400px">
+            <section class="center-content section no-pad-bot">
+                <div class="container">
+                    <h1 class="header center light">Fast, Simple, Reliable</h1>
+
+                    <div class="row center">
+                        <h5 class="header col s12 light">Why worry?</h5>
+                    </div>
+                </div>
+            </section>
+            <div class="parallax">
+                <img src="assets/image/header.jpg" alt=""/>
+            </div>
+        </header>
+        <main class="container">
+            <div class="section">
+                <app></app>
+            </div>
+        </main>
+        <footer class="page-footer green lighten-1">
+            <div class="footer-copyright">
+                <div class="container">
+                    Copyright &copy; 2016 Minepay
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
