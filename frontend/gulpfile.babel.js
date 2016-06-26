@@ -41,7 +41,8 @@ gulp.task('libraries', ['materialize'], () => {
             'zone.js/dist/**',
             '@angular/**',
             'jquery/dist/jquery.min.js',
-            'jquery/dist/jquery.min.map'
+            'jquery/dist/jquery.min.map',
+            'highlight.js/lib/**/*.js'
         ],
         {
             cwd: 'node_modules/**'
@@ -125,5 +126,5 @@ gulp.task('serve', () => {
     gulp.watch(path.join(__dirname, 'src/script/**/*.js'), ['script']);
     gulp.watch(path.join(__dirname, 'src/image/**/*.jpg'), ['image']);
     gulp.watch(path.join(__dirname, 'src/image/**/*.svg'), ['image']);
-    gulp.watch(path.join(__dirname, 'src/template/*.html'), ['template']);
+    gulp.watch(path.join(__dirname, 'src/template/**/*.html'), ['template']);
 });
