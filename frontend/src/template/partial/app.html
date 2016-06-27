@@ -6,22 +6,22 @@
         <div class="card cyan darken-4">
             <div class="card-content white-text">
                 <span class="card-title">Request</span>
-                    <pre><code class="highlight">GET /mojang HTTP/1.1
-Host: api.minepay.net
-Accept: application/json</code></pre>
+                    <pre><code class="highlight"><span class="hljs-keyword">GET</span> <span class="hljs-string">/mojang</span> HTTP/1.1
+<span class="hljs-attr">Host</span>: api.minepay.net
+<span class="hljs-attr">Accept:</span> application/json</code></pre>
             </div>
         </div>
         <div class="card cyan darken-4">
             <div class="card-content white-text">
                 <span class="card-title">Response</span>
-                    <pre><code class="highlight">HTTP/1.1 200 Ok
-Content-Type: application/json;Charset=UTF-8
+                    <pre><code class="highlight">HTTP/1.1 <span class="hljs-number">200</span> Ok
+<span class="hljs-attr">Content-Type</span>: application/json;Charset=UTF-8
 
-{
-    "name":     "MCAPI",
-    "version":  "0.0.0-SNAPSHOT",
-    "vendor":   "Minepay"
-}</code></pre>
+<span class="json">{
+    <span class="hljs-attribute">"name"</span>:     <span class="hljs-string">"MCAPI"</span>,
+    <span class="hljs-attribute">"version"</span>:  <span class="hljs-string">"0.0.0-SNAPSHOT"</span>,
+    <span class="hljs-attribute">"vendor"</span>:   <span class="hljs-string">"Minepay"</span>
+}</span></code></pre>
             </div>
         </div>
     </div>
@@ -48,34 +48,34 @@ Content-Type: application/json;Charset=UTF-8
             <div class="card cyan darken-4">
                 <div class="card-content white-text">
                     <span class="card-title">Request</span>
-                        <pre><code class="highlight">POST /mojang/v1/name HTTP/1.1
-Host: api.minepay.net
-Accept: application/json
-Content-Type: application/json
+                        <pre><code class="highlight"><span class="hljs-keyword">POST</span> <span class="hljs-string">/mojang/v1/name</span> HTTP/1.1
+<span class="hljs-attribute">Host</span>: api.minepay.net
+<span class="hljs-attribute">Accept</span>: application/json
+<span class="hljs-attribute">Content-Type</span>: application/json
 
-[
-    "HighLordAkkarin",
-    "Notch",
-    "HopefullyUnregisteredUsername"
-]</code></pre>
+<span class="json">[
+    <span class="hljs-string">"HighLordAkkarin"</span>,
+    <span class="hljs-string">"Notch",</span>
+    <span class="hljs-string">"HopefullyUnregisteredUsername"</span>
+]</span></code></pre>
                 </div>
             </div>
             <div class="card cyan darken-4">
                 <div class="card-content white-text">
                     <span class="card-title">Response</span>
-                    <pre><code class="highlight">HTTP/1.1 200 Ok
-Content-Type: application/json;Charset=UTF-8
+                    <pre><code class="highlight">HTTP/1.1 <span class="hljs-number">200</span> Ok
+<span class="hljs-attribute">Content-Type</span>: application/json;Charset=UTF-8
 
-[
+<span class="json">[
     {
-        "id":   "d71a5dac4e71443b81584389c269e44d",
-        "name": "HighLordAkkarin"
+        <span class="hljs-attr">"id"</span>:   <span class="hljs-string">"d71a5dac4e71443b81584389c269e44d"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"HighLordAkkarin"</span>
     },
     {
-        "id":   "069a79f444e94726a5befca90e38aaf5",
-        "name": "Notch"
+        <span class="hljs-attr">"id"</span>:   <span class="hljs-string">"069a79f444e94726a5befca90e38aaf5"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Notch"</span>
     }
-]</code></pre>
+]</span></code></pre>
             </div>
             </div>
         </div>

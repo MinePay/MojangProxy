@@ -41,25 +41,12 @@
         <script type="text/javascript">
             // <![CDATA[
             System.import('app').then(null, console.error.bind(console));
-
-            function highlight() {
-                (function (w) {
-                    if (!w) {
-                        console.log('Outdated browser. Skipping code highlighting.');
-                        return;
-                    }
-
-                    $('code.highlight').each(function (i, e) {
-                        const worker = new w('assets/script/code.worker.js');
-
-                        worker.onmessage = function (event) {
-                            $(e).html(event.data);
-                        };
-
-                        worker.postMessage($(e).text());
-                    });
-                })(window.Worker);
-            }
+            System.import('highlight.js/languages/http.js').then(function(lang) {
+                hljs.registerLanguage('http', lang);
+            });
+            System.import('highlight.js/languages/json.js').then(function(json) {
+                hljs.registerLanguage('json', json);
+            });
 
             $(document).ready(function () {
                 $('.parallax').parallax();

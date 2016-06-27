@@ -38,14 +38,7 @@ export class RequestNameComponent {
         this.http.get('https://api.minepay.net/mojang/v1/name/' + encodeURIComponent(this.identifier))
             .subscribe((res : Response) => {
                 const response = document.getElementById('request-name');
-                response.innerText = 'HTTP/1.1 200 Ok\nContent-Type: application/json;Charset=UTF-8\n\n' + JSON.stringify(res.json(), null, 4);
-
-                const worker = new Worker('assets/script/code.worker.js');
-                worker.onmessage = function(event) {
-                    console.log('Worker completed');
-                    response.innerHTML = event.data;
-                };
-                worker.postMessage(response.innerText);
+                response.innerText = hljs.highlightAuto('HTTP/1.1 200 Ok\nContent-Type: application/json;Charset=UTF-8\n\n' + JSON.stringify(res.json(), null, 4)).value;
             });
     }
 }

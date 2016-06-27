@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Http, Response } from '@angular/http';
+declare var highlight : any;
 
 @Component({
     selector: 'request-history',
@@ -38,14 +39,7 @@ export class RequestHistoryComponent {
         this.http.get('https://api.minepay.net/mojang/v1/profile/' + encodeURIComponent(this.identifier) + '/history')
             .subscribe((res : Response) => {
                 const response = document.getElementById('request-history');
-                response.innerText = 'HTTP/1.1 200 Ok\nContent-Type: application/json;Charset=UTF-8\n\n' + JSON.stringify(res.json(), null, 4);
-
-                const worker = new Worker('assets/script/code.worker.js');
-                worker.onmessage = function(event) {
-                    console.log('Worker completed');
-                    response.innerHTML = event.data;
-                };
-                worker.postMessage(response.innerText);
+                response.innerText = hljs.highlightAuto('HTTP/1.1 200 Ok\nContent-Type: application/json;Charset=UTF-8\n\n' + JSON.stringify(res.json(), null, 4)).value;
             });
     }
 }
