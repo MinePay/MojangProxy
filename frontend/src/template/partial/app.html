@@ -28,47 +28,11 @@ Content-Type: application/json;Charset=UTF-8
 </div>
 <div class="divider"></div>
 <div class="section">
-    <request-profile>
-
-    </request-profile>
+    <request-profile></request-profile>
 </div>
 <div class="divider"></div>
 <div class="section">
-    <request-history>
-        <h4>GET /v1/profile/{identifier}/history</h4>
-        <p>Performs a lookup for the profile history of a specific player based on their globally unique profile identifier or display name at the current point in time.</p>
-
-        <div class="cards">
-            <div class="card cyan darken-4">
-                <div class="card-content white-text">
-                    <span class="card-title">Request</span>
-                        <p>Try it yourself:</p>
-                        <input type="text" value="HighLordAkkarin" />
-                        <pre><code class="highlight">GET /mojang/v1/profile/HighLordAkkarin/history HTTP/1.1
-    Host: api.minepay.net
-    Accept: application/json</code></pre>
-                </div>
-            </div>
-            <div class="card cyan darken-4">
-                <div class="card-content white-text">
-                    <span class="card-title">Response</span>
-                    <pre><code class="highlight">HTTP/1.1 200 Ok
-    Content-Type: application/json;Charset=UTF-8
-
-    [
-        {
-            "name":         "LordLorkin",
-            "changedToAt":  null
-        },
-        {
-            "name":         "HighLordAkkarin",
-            "changedToAt":  1423053791000
-        }
-    ]</code></pre>
-                </div>
-            </div>
-        </div>
-    </request-history>
+    <request-history></request-history>
 </div>
 <div class="divider"></div>
 <div class="section">
