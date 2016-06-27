@@ -1,8 +1,11 @@
 'use strict';
+import autoprefixer from 'gulp-autoprefixer';
 import browserSync from 'browser-sync';
+import cleanCss from 'gulp-clean-css';
 import del from 'del';
 import gulp from 'gulp';
 import htmlMinify from 'gulp-htmlmin';
+import less from 'gulp-less';
 import path from 'path';
 import sequence from 'gulp-sequence';
 import sourcemaps from 'gulp-sourcemaps';
@@ -15,7 +18,7 @@ const typescriptProject = tsc.createProject(path.join(__dirname, 'tsconfig.json'
 // Collection Tasks
 gulp.task('default', sequence('clean', 'build'));
 gulp.task('development', sequence('clean', 'build', 'serve'));
-gulp.task('build', ['libraries', 'image', 'typescript', 'template']);
+gulp.task('build', ['libraries', 'image', 'typescript', 'less', 'template']);
 
 /**
  * Deletes the distribution ready version of the application in order to make space for a freshly
@@ -109,10 +112,24 @@ gulp.task('template', () => {
 gulp.task('image', () => {
     return gulp.src(
         [
-                        path.join(__dirname, 'src/image/*.jpg'),
-                        path.join(__dirname, 'src/image/*.svg')
+            path.join(__dirname, 'src/image/*.jpg'),
+            path.join(__dirname, 'src/image/*.svg')
         ])
         .pipe(gulp.dest(path.join(__dirname, 'dist/assets/image/')))
+        .pipe(sync.stream());
+});
+
+/**
+ * Compiles LESS CSS Stylesheets.
+ */
+gulp.task('less', () => {
+    return gulp.src(path.join(__dirname, 'src/less/*.less'))
+        .pipe(sourcemaps.init())
+        .pipe(less())
+        .pipe(autoprefixer())
+        .pipe(cleanCss())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(path.join(__dirname, 'dist/assets/style/')))
         .pipe(sync.stream());
 });
 
