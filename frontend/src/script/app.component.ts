@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {RequestProfileComponent} from "./RequestProfile.component";
 import {RequestHistoryComponent} from "./RequestHistory.component";
+import {RequestNameComponent} from "./RequestName.component";
 declare var highlight : any;
 
 /**
@@ -11,6 +12,7 @@ declare var highlight : any;
     templateUrl: "partial/app.html",
     directives: [
         RequestHistoryComponent,
+        RequestNameComponent,
         RequestProfileComponent
     ]
 })

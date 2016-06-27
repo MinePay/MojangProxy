@@ -1,0 +1,27 @@
+<h4>GET /v1/name/{name}</h4>
+<p>Performs a lookup for the profile identifier of a specific player based on their display name at the current point or a specific point in time.</p>
+
+<div class="cards">
+    <div class="card cyan darken-4">
+        <div class="card-content white-text">
+            <span class="card-title">Request</span>
+            <p>Try it yourself:</p>
+            <input type="text" [(ngModel)]="identifier" />
+                <pre><code><span class="hljs-keyword">GET</span> <span class="hljs-string">/mojang/v1/name/{{identifier}}</span> HTTP/1.1
+<span class="hljs-keyword">Host</span>: api.minepay.net
+<span class="hljs-keyword">Accept</span>: application/json</code></pre>
+        </div>
+    </div>
+    <div class="card cyan darken-4">
+        <div class="card-content white-text">
+            <span class="card-title">Response</span>
+            <pre><code id="request-name" class="highlight">HTTP/1.1 200 Ok
+Content-Type: application/json;Charset=UTF-8
+
+{
+    "id":   "d71a5dac4e71443b81584389c269e44d",
+    "name": "HighLordAkkarin"
+}</code></pre>
+        </div>
+    </div>
+</div>
