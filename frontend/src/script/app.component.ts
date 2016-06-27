@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {RequestProfileComponent} from "./RequestProfile.component";
 declare var highlight : any;
 
 /**
@@ -6,7 +7,10 @@ declare var highlight : any;
  */
 @Component({
     selector:    "app",
-    templateUrl: "partial/app.html"
+    templateUrl: "partial/app.html",
+    directives: [
+        RequestProfileComponent
+    ]
 })
 export class AppComponent implements OnInit {
 
