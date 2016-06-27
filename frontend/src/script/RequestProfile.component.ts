@@ -7,7 +7,6 @@ import { Http, Response } from '@angular/http';
 })
 export class RequestProfileComponent {
     _identifier : string = 'HighLordAkkarin';
-    awaitingUpdate : boolean = false;
 
     pollTimeout : number = null;
 
