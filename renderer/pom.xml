@@ -25,8 +25,13 @@
 
         <!-- Rendering -->
         <dependency>
-            <groupId>org.lwjgl.lwjgl</groupId>
+            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-platform</artifactId>
+            <classifier>natives-${os.detected.name}</classifier>
         </dependency>
 
         <!-- Serialization -->

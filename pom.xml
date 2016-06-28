@@ -88,9 +88,15 @@
 
             <!-- Rendering -->
             <dependency>
-                <groupId>org.lwjgl.lwjgl</groupId>
+                <groupId>org.lwjgl</groupId>
                 <artifactId>lwjgl</artifactId>
-                <version>2.9.3</version>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-platform</artifactId>
+                <version>3.0.0</version>
+                <classifier>natives-${os.detected.name}</classifier>
             </dependency>
 
             <!-- Spring -->
@@ -241,6 +247,14 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.4.0.Final</version>
+            </extension>
+        </extensions>
     </build>
 
     <modules>
