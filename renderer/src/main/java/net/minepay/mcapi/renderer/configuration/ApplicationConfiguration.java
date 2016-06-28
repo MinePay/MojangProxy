@@ -2,7 +2,10 @@ package net.minepay.mcapi.renderer.configuration;
 
 import com.google.common.base.Preconditions;
 
+import org.apache.commons.cli.CommandLine;
+
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 /**
  * Represents the current application configuration.
@@ -23,6 +26,10 @@ public class ApplicationConfiguration {
         this.pauseTime = pauseTime;
         this.threadCount = threadCount;
         this.showWindow = showWindow;
+    }
+
+    public ApplicationConfiguration(@Nonnull CommandLine commandLine) {
+        this(commandLine.hasOption("debug"), (commandLine.hasOption("wait") ? Integer.parseUnsignedInt(commandLine.getOptionValue("wait")) : 0), (commandLine.hasOption("threads") ? Integer.parseUnsignedInt(commandLine.getOptionValue("threads")) : 0), commandLine.hasOption("window"));
     }
 
     public boolean isDebug() {
