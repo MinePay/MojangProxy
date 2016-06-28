@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
+import java.security.Security;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -21,8 +23,8 @@ public class MojangProxy extends SpringBootServletInitializer {
      * @param arguments a
      */
     public static void main(@Nonnull String[] arguments) {
-        System.setProperty("networkaddress.cache.ttl", "30");
-        System.setProperty("networkaddress.cache.negative.ttl", "10");
+        Security.setProperty("networkaddress.cache.ttl", "30");
+        Security.setProperty("networkaddress.cache.negative.ttl", "10");
 
         SpringApplication.run(MojangProxy.class, arguments);
     }
