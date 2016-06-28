@@ -92,6 +92,12 @@
                 </configuration>
             </plugin>
 
+            <!-- Shade -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+
             <!-- Attach Sources -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
