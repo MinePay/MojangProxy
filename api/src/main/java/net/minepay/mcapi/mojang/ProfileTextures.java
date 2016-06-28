@@ -85,10 +85,12 @@ public class ProfileTextures {
     @ThreadSafe
     public static class Texture {
         private final URL url;
+        private final Map<String, String> metadata;
 
         @JsonCreator
-        public Texture(@Nonnull @JsonProperty("url") URL url) {
+        public Texture(@Nonnull @JsonProperty("url") URL url, @Nonnull @JsonProperty("metadata") Map<String, String> metadata) {
             this.url = url;
+            this.metadata = Collections.unmodifiableMap(metadata);
         }
 
         /**
@@ -99,6 +101,15 @@ public class ProfileTextures {
         @Nonnull
         public URL getUrl() {
             return this.url;
+        }
+
+        /**
+         * Retrieves a texture's metadata (such as model type).
+         * @return a map of properties.
+         */
+        @Nonnull
+        public Map<String, String> getMetadata() {
+            return this.metadata;
         }
     }
 }
