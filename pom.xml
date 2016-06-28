@@ -206,6 +206,23 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <!-- Native Dependencies -->
+                <plugin>
+                    <groupId>com.googlecode.mavennatives</groupId>
+                    <artifactId>maven-nativedependencies-plugin</artifactId>
+                    <version>0.0.5</version>
+
+                    <executions>
+                        <execution>
+                            <id>unpacknatives</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
