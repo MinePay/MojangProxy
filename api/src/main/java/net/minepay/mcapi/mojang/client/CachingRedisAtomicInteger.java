@@ -52,7 +52,6 @@ public class CachingRedisAtomicInteger {
      * Resets the integer value.
      */
     public void reset() {
-        this.taskExecutor.execute(() -> this.redisTemplate.delete(this.keyName));
         this.integer.set(0);
     }
 }
