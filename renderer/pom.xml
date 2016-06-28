@@ -23,6 +23,12 @@
             <artifactId>commons-cli</artifactId>
         </dependency>
 
+        <!-- Injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
         <!-- Java -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
