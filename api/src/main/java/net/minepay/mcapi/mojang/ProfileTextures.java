@@ -3,6 +3,7 @@ package net.minepay.mcapi.mojang;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -51,6 +52,7 @@ public class ProfileTextures {
     public static ProfileTextures fromBaseString(@Nonnull String encodedTextures) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
+        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
         byte[] textureBytes = Base64.getDecoder().decode(encodedTextures);
         return mapper.readerFor(ProfileTextures.class).readValue(new String(textureBytes, StandardCharsets.UTF_8));
