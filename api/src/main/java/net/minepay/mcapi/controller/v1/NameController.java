@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -99,13 +100,14 @@ public class NameController {
 
         // check cache first
         List<ProfileName> identifiers = new ArrayList<>();
+        Iterator<String> it = names.iterator();
 
-        for (String name : names) {
-            ProfileName identifier = this.cache.findIdentifier(name);
+        while (it.hasNext()) {
+            ProfileName identifier = this.cache.findIdentifier(it.next());
 
             if (identifier != null) {
                 identifiers.add(identifier);
-                names.remove(name);
+                it.remove();
             }
         }
 
