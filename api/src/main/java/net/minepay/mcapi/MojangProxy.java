@@ -16,19 +16,22 @@ import javax.annotation.Nonnull;
 public class MojangProxy extends SpringBootServletInitializer {
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected SpringApplicationBuilder configure(@Nonnull SpringApplicationBuilder builder) {
-        return builder.sources(MojangProxy.class);
-    }
-
-    /**
      * <strong>JVM Entry Point</strong>
      *
      * @param arguments a
      */
     public static void main(@Nonnull String[] arguments) {
+        System.setProperty("networkaddress.cache.ttl", "30");
+        System.setProperty("networkaddress.cache.negative.ttl", "10");
+
         SpringApplication.run(MojangProxy.class, arguments);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected SpringApplicationBuilder configure(@Nonnull SpringApplicationBuilder builder) {
+        return builder.sources(MojangProxy.class);
     }
 }
