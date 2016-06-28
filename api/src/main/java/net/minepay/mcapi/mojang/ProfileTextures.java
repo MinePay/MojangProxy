@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -88,9 +89,14 @@ public class ProfileTextures {
         private final Map<String, String> metadata;
 
         @JsonCreator
-        public Texture(@Nonnull @JsonProperty("url") URL url, @Nonnull @JsonProperty("metadata") Map<String, String> metadata) {
+        public Texture(@Nonnull @JsonProperty("url") URL url, @Nullable @JsonProperty("metadata") Map<String, String> metadata) {
             this.url = url;
-            this.metadata = Collections.unmodifiableMap(metadata);
+
+            if (metadata != null) {
+                this.metadata = Collections.unmodifiableMap(metadata);
+            } else {
+                this.metadata = null;
+            }
         }
 
         /**
