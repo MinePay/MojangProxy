@@ -33,12 +33,12 @@ public class AddressRange implements Iterable<InetAddress> {
         Inet4Address endAddress = (Inet4Address) InetAddress.getByName(range.substring(separatorIndex + 1));
 
         {
-            int startAddressValue = convertAddress(startAddress);
-            int endAddressValue = convertAddress(endAddress);
+            long startAddressValue = convertAddress(startAddress);
+            long endAddressValue = convertAddress(endAddress);
             int offset = 0;
 
             while ((startAddressValue + offset) <= endAddressValue) {
-                int currentAddressValue = startAddressValue + offset++;
+                long currentAddressValue = startAddressValue + offset++;
                 addresses.add(convertAddress(currentAddressValue));
             }
         }
@@ -52,13 +52,13 @@ public class AddressRange implements Iterable<InetAddress> {
      * @param address an address.
      * @return an integer representation.
      */
-    public static int convertAddress(@Nonnull Inet4Address address) {
-        int value = 0;
+    public static long convertAddress(@Nonnull Inet4Address address) {
+        long value = 0;
         byte[] raw = address.getAddress();
 
         for (int i = 0; i < 4; ++i) {
             value <<= 8;
-            value |= raw[i];
+            value |= (raw[i] & 0xFF);
         }
 
         return value;
@@ -73,7 +73,7 @@ public class AddressRange implements Iterable<InetAddress> {
      * @throws UnknownHostException when the specified hostname is unknown.
      */
     @Nonnull
-    public static InetAddress convertAddress(int address) throws UnknownHostException {
+    public static InetAddress convertAddress(long address) throws UnknownHostException {
         byte[] raw = new byte[4];
 
         for (int i = 3; i >= 0; --i) {
