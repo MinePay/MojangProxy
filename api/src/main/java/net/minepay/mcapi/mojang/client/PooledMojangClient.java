@@ -69,18 +69,32 @@ public class PooledMojangClient implements MojangClient {
      */
     @Nonnull
     private MojangClient getCurrentClient() {
-        LocalAddressMojangClient client = this.clients.get(this.clientIndex.get());
+        LocalAddressMojangClient client;
+        int index = this.clientIndex.get();
 
-        while (client.hasExceededRateLimitation()) {
-            int index = this.clientIndex.incrementAndGet();
+        if  (index < this.clients.size()) {
+            client = this.clients.get(index);
+        } else {
+            client = null;
+        }
 
-            if (index >= this.clients.size()) {
-                index = 0;
-                this.clientIndex.compareAndSet(index, 0);
+        while (client == null || client.hasExceededRateLimitation()) {
+            int newIndex = this.clientIndex.get();
+
+            if (newIndex >= this.clients.size()) {
+                newIndex = 0;
+                this.clientIndex.compareAndSet(newIndex, 0);
             }
 
-            client.resetRateLimit();
-            client = this.clients.get(index);
+            if (client != null) {
+                client.resetRateLimit();
+            }
+
+            if (this.clientIndex.compareAndSet(index, newIndex)) {
+                client = this.clients.get(index);
+            } else {
+                client = this.clients.get(this.clientIndex.get());
+            }
         }
 
         return client;
