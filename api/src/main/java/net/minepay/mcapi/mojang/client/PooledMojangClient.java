@@ -71,8 +71,11 @@ public class PooledMojangClient implements MojangClient {
             GenericObjectPoolConfig config = new GenericObjectPoolConfig();
             config.setMinIdle(12);
             config.setMaxIdle(24);
-            config.setBlockWhenExhausted(true);
+            config.setMaxTotal(48);
+            config.setBlockWhenExhausted(false);
             config.setMinEvictableIdleTimeMillis(1000);
+            config.setTestOnCreate(false);
+            config.setTestWhileIdle(false);
             config.setTestOnReturn(true);
             config.setTestOnBorrow(true);
 
