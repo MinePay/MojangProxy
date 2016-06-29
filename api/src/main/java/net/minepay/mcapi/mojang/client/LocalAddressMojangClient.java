@@ -16,14 +16,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -33,39 +31,21 @@ import java.util.UUID;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Provides a Mojang client for a specific local IP address.
  *
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
+@Immutable
+@ThreadSafe
 public class LocalAddressMojangClient implements MojangClient {
-    private static final String USER_AGENT;
     private static final ObjectReader reader;
     private static final ObjectWriter writer;
 
     static {
-        {
-            Package p = LocalAddressMojangClient.class.getPackage();
-
-            String name = p.getImplementationTitle();
-            String version = p.getImplementationVersion();
-            String vendor = p.getImplementationVendor();
-
-            if (name == null) {
-                name = "MCAPI";
-            }
-
-            if (version == null) {
-                version = "0.0.0-SNAPSHOT";
-            }
-
-            if (vendor == null) {
-                vendor = "Minepay";
-            }
-
-            USER_AGENT = String.format("%s/%s (+%s)", name, version, vendor);
-        }
         {
             ObjectMapper mapper = new ObjectMapper();
             mapper.findAndRegisterModules();
@@ -76,32 +56,37 @@ public class LocalAddressMojangClient implements MojangClient {
         }
     }
 
-    private final InetAddress address;
+    private final PooledAddress address;
     private final HttpClient client;
-    private final int requestLimitation;
-    private final CachingRedisAtomicInteger requestCount;
 
-    public LocalAddressMojangClient(@Nonnull InetAddress address, @Nonnegative int requestLimitation, @Nonnull CachingRedisAtomicInteger requestCount) {
+    public LocalAddressMojangClient(@Nonnull HttpClient client, @Nonnull PooledAddress address) {
+        this.client = client;
         this.address = address;
-        this.requestLimitation = requestLimitation;
-        this.requestCount = requestCount;
+    }
 
-        PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager();
-        manager.setMaxTotal(128); // Maximum amount of cached connections
-        manager.setDefaultMaxPerRoute(24); // Maximum amount of cached connections per route
+    /**
+     * Executes an HTTP request.
+     *
+     * @param request a request.
+     * @return a response.
+     *
+     * @throws IOException when an error occurs while connecting, writing or reading.
+     */
+    @Nullable
+    public HttpResponse execute(@Nonnull HttpRequestBase request) throws IOException {
+        request.setConfig(RequestConfig.custom().setLocalAddress(this.address.getDeviceAddress()).build());
+        HttpResponse response = this.client.execute(request);
 
-        this.client = HttpClientBuilder.create()
-                .disableAuthCaching()
-                .disableCookieManagement()
-                .disableRedirectHandling()
-                .setConnectionManager(manager)
-                .setUserAgent(USER_AGENT)
-                .setDefaultRequestConfig(
-                        RequestConfig.custom()
-                                .setLocalAddress(address)
-                                .build()
-                )
-                .build();
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200:
+                return response;
+            case 204:
+                return null;
+            case 429:
+                throw new RateLimitExceededException();
+            default:
+                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
+        }
     }
 
     /**
@@ -113,17 +98,10 @@ public class LocalAddressMojangClient implements MojangClient {
         this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/" + identifier + "?unsigned=false");
-        HttpResponse response = this.client.execute(request);
+        HttpResponse response = this.execute(request);
 
-        switch (response.getStatusLine().getStatusCode()) {
-            case 200:
-                break;
-            case 204:
-                return null;
-            case 429:
-                throw new RateLimitExceededException();
-            default:
-                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
+        if (response == null) {
+            return null;
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -149,17 +127,10 @@ public class LocalAddressMojangClient implements MojangClient {
         this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8"));
-        HttpResponse response = this.client.execute(request);
+        HttpResponse response = this.execute(request);
 
-        switch (response.getStatusLine().getStatusCode()) {
-            case 200:
-                break;
-            case 204:
-                return null;
-            case 429:
-                throw new RateLimitExceededException();
-            default:
-                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
+        if (response == null) {
+            return null;
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -176,17 +147,10 @@ public class LocalAddressMojangClient implements MojangClient {
         this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://api.mojang.com/users/profiles/minecraft/" + URLEncoder.encode(name, "UTF-8") + "?at=" + timestamp.getEpochSecond());
-        HttpResponse response = this.client.execute(request);
+        HttpResponse response = this.execute(request);
 
-        switch (response.getStatusLine().getStatusCode()) {
-            case 200:
-                break;
-            case 204:
-                return null;
-            case 429:
-                throw new RateLimitExceededException();
-            default:
-                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
+        if (response == null) {
+            return null;
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -213,17 +177,10 @@ public class LocalAddressMojangClient implements MojangClient {
             request.setEntity(entity);
         }
 
-        HttpResponse response = this.client.execute(request);
+        HttpResponse response = this.execute(request);
 
-        switch (response.getStatusLine().getStatusCode()) {
-            case 200:
-                break;
-            case 204:
-                return null;
-            case 429:
-                throw new RateLimitExceededException();
-            default:
-                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
+        if (response == null) {
+            return null;
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -240,17 +197,10 @@ public class LocalAddressMojangClient implements MojangClient {
         this.updateRequestCount();
 
         HttpGet request = new HttpGet("https://api.mojang.com/user/profiles/" + identifier + "/names");
-        HttpResponse response = this.client.execute(request);
+        HttpResponse response = this.execute(request);
 
-        switch (response.getStatusLine().getStatusCode()) {
-            case 200:
-                break;
-            case 204:
-                return null;
-            case 429:
-                throw new RateLimitExceededException();
-            default:
-                throw new InterfaceException("Encountered unexpected status code " + response.getStatusLine().getStatusCode() + " while attempting to parse API response");
+        if (response == null) {
+            return null;
         }
 
         try (InputStream inputStream = response.getEntity().getContent()) {
@@ -273,7 +223,7 @@ public class LocalAddressMojangClient implements MojangClient {
      * @return true if exceeded, false otherwise.
      */
     boolean hasExceededRateLimitation() {
-        return this.requestCount.get() > this.requestLimitation;
+        return this.address.getRequestCount().get() > this.address.getRateLimit();
     }
 
     /**
@@ -282,7 +232,7 @@ public class LocalAddressMojangClient implements MojangClient {
      * @return an address.
      */
     @Nonnull
-    public InetAddress getAddress() {
+    public PooledAddress getAddress() {
         return this.address;
     }
 
@@ -293,7 +243,7 @@ public class LocalAddressMojangClient implements MojangClient {
      */
     @Nonnegative
     int getRateLimitation() {
-        return this.requestLimitation;
+        return this.address.getRateLimit();
     }
 
     /**
@@ -303,20 +253,20 @@ public class LocalAddressMojangClient implements MojangClient {
      */
     @Nonnegative
     int getRequestCount() {
-        return this.requestCount.get();
+        return this.address.getRequestCount().get();
     }
 
     /**
      * Resets the rate limitation.
      */
     public void resetRateLimit() {
-        this.requestCount.reset();
+        this.address.getRequestCount().reset();
     }
 
     /**
      * Updates the request counter.
      */
     private void updateRequestCount() {
-        this.requestCount.increment();
+        this.address.getRequestCount().increment();
     }
 }

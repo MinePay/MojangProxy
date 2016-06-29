@@ -6,6 +6,15 @@ import net.minepay.mcapi.mojang.Profile;
 import net.minepay.mcapi.mojang.ProfileName;
 import net.minepay.mcapi.mojang.ProfileNameChange;
 
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,13 +25,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,68 +46,35 @@ import javax.annotation.concurrent.ThreadSafe;
 @Immutable
 @ThreadSafe
 public class PooledMojangClient implements MojangClient {
-    private final List<LocalAddressMojangClient> clients;
-    private final AtomicInteger clientIndex = new AtomicInteger(0);
+    private final ObjectPool<LocalAddressMojangClient> clientObjectPool;
 
     @Autowired
     public PooledMojangClient(@Nonnull RedisTemplate<String, Integer> rateLimitRedisTemplate, @Nonnull TaskExecutor taskExecutor) throws IOException {
-        try (InputStream inputStream = new FileInputStream("addresses.json")) {
+        try (InputStream inputStream = new FileInputStream(Paths.get("addresses.json").toFile())) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.findAndRegisterModules();
             Map<String, Integer> addresses = mapper.readerFor(mapper.getTypeFactory().constructMapType(Map.class, String.class, Integer.class)).readValue(inputStream);
 
-            List<LocalAddressMojangClient> clients = new ArrayList<>();
+            List<PooledAddress> clients = new ArrayList<>();
             addresses.forEach((a, l) -> {
                 try {
                     if (a.contains("-")) {
-                        (new AddressRange(a)).forEach((addr) -> clients.add(new LocalAddressMojangClient(addr, l, new CachingRedisAtomicInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate, taskExecutor))));
+                        (new AddressRange(a)).forEach((addr) -> clients.add(new PooledAddress(addr, new CachingRedisAtomicInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate, taskExecutor), l)));
                     } else {
-                        clients.add(new LocalAddressMojangClient(InetAddress.getByName(a), l, new CachingRedisAtomicInteger("address:" + a, rateLimitRedisTemplate, taskExecutor)));
+                        clients.add(new PooledAddress(InetAddress.getByName(a), new CachingRedisAtomicInteger("address:" + a, rateLimitRedisTemplate, taskExecutor), l));
                     }
                 } catch (UnknownHostException ex) {
                     throw new IllegalArgumentException("Could not bind to local address: " + ex.getMessage(), ex);
                 }
             });
-            this.clients = Collections.unmodifiableList(clients);
+
+            GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+            config.setMinIdle(12);
+            config.setMaxIdle(24);
+            config.setBlockWhenExhausted(true);
+
+            this.clientObjectPool = new GenericObjectPool<>(new ClientPooledObjectFactory(clients), config);
         }
-    }
-
-    /**
-     * Retrieves the currently selected client implementation in the client pool.
-     *
-     * @return a client.
-     */
-    @Nonnull
-    private MojangClient getCurrentClient() {
-        LocalAddressMojangClient client;
-        int index = this.clientIndex.get();
-
-        if  (index < this.clients.size()) {
-            client = this.clients.get(index);
-        } else {
-            client = null;
-        }
-
-        while (client == null || client.hasExceededRateLimitation()) {
-            int newIndex = this.clientIndex.get();
-
-            if (newIndex >= this.clients.size()) {
-                newIndex = 0;
-                this.clientIndex.compareAndSet(newIndex, 0);
-            }
-
-            if (client != null) {
-                client.resetRateLimit();
-            }
-
-            if (this.clientIndex.compareAndSet(index, newIndex)) {
-                client = this.clients.get(index);
-            } else {
-                client = this.clients.get(this.clientIndex.get());
-            }
-        }
-
-        return client;
     }
 
     /**
@@ -106,7 +83,17 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public Profile findProfile(@Nonnull String identifier) throws IOException {
-        return this.getCurrentClient().findProfile(identifier);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.findProfile(identifier);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -115,7 +102,17 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public Profile findProfile(@Nonnull UUID identifier) throws IOException {
-        return this.getCurrentClient().findProfile(identifier);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.findProfile(identifier);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -124,7 +121,17 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public ProfileName findIdentifier(@Nonnull String name) throws IOException {
-        return this.getCurrentClient().findIdentifier(name);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.findIdentifier(name);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -133,7 +140,17 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public ProfileName findIdentifier(@Nonnull String name, @Nonnull Instant timestamp) throws IOException {
-        return this.getCurrentClient().findIdentifier(name, timestamp);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.findIdentifier(name, timestamp);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -142,7 +159,17 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileName> findIdentifier(@Nonnull List<String> names) throws IOException {
-        return this.getCurrentClient().findIdentifier(names);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.findIdentifier(names);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -151,7 +178,17 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileNameChange> getNameHistory(@Nonnull String identifier) throws IOException {
-        return this.getCurrentClient().getNameHistory(identifier);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.getNameHistory(identifier);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -160,6 +197,100 @@ public class PooledMojangClient implements MojangClient {
     @Nullable
     @Override
     public List<ProfileNameChange> getNameHistory(@Nonnull UUID identifier) throws IOException {
-        return this.getCurrentClient().getNameHistory(identifier);
+        try {
+            LocalAddressMojangClient client = this.clientObjectPool.borrowObject();
+
+            try {
+                return client.getNameHistory(identifier);
+            } finally {
+                this.clientObjectPool.returnObject(client);
+            }
+        } catch (Exception ex) {
+            throw new IOException("Could not borrow/return client from/to pool: " + ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Provides a pooled object factory for Mojang client objects.
+     */
+    public static class ClientPooledObjectFactory extends BasePooledObjectFactory<LocalAddressMojangClient> {
+        private static final String USER_AGENT;
+
+        static {
+            Package p = LocalAddressMojangClient.class.getPackage();
+
+            String name = p.getImplementationTitle();
+            String version = p.getImplementationVersion();
+            String vendor = p.getImplementationVendor();
+
+            if (name == null) {
+                name = "MCAPI";
+            }
+
+            if (version == null) {
+                version = "0.0.0-SNAPSHOT";
+            }
+
+            if (vendor == null) {
+                vendor = "Minepay";
+            }
+
+            USER_AGENT = String.format("%s/%s (+%s)", name, version, vendor);
+        }
+
+        private final Deque<PooledAddress> addresses;
+        private final HttpClient client;
+
+        public ClientPooledObjectFactory(@Nonnull List<PooledAddress> addresses) {
+            this.addresses = new ConcurrentLinkedDeque<>(addresses);
+
+            PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager();
+            manager.setMaxTotal(128); // Maximum amount of cached connections
+            manager.setDefaultMaxPerRoute(12); // Maximum amount of cached connections per route
+
+            this.client = HttpClientBuilder.create()
+                    .disableAuthCaching()
+                    .disableCookieManagement()
+                    .disableRedirectHandling()
+                    .setConnectionManager(manager)
+                    .setUserAgent(USER_AGENT)
+                    .build();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public LocalAddressMojangClient create() throws Exception {
+            PooledAddress address = this.addresses.pop();
+            return new LocalAddressMojangClient(this.client, address);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public PooledObject<LocalAddressMojangClient> wrap(@Nonnull LocalAddressMojangClient obj) {
+            return new DefaultPooledObject<>(obj);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean validateObject(@Nonnull PooledObject<LocalAddressMojangClient> p) {
+            return !p.getObject().hasExceededRateLimitation();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void destroyObject(@Nonnull PooledObject<LocalAddressMojangClient> p) throws Exception {
+            LocalAddressMojangClient client = p.getObject();
+            client.resetRateLimit();
+
+            this.addresses.push(client.getAddress());
+        }
     }
 }
