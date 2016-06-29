@@ -1,7 +1,9 @@
 package net.minepay.mcapi;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
@@ -15,6 +17,7 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
 @SpringBootApplication
+@EnableAutoConfiguration(exclude = WebClientAutoConfiguration.class)
 public class MojangProxy extends SpringBootServletInitializer {
 
     /**
