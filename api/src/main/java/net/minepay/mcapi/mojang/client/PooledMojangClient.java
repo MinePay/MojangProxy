@@ -59,9 +59,9 @@ public class PooledMojangClient implements MojangClient {
             addresses.forEach((a, l) -> {
                 try {
                     if (a.contains("-")) {
-                        (new AddressRange(a)).forEach((addr) -> clients.add(new PooledAddress(addr, new CachingRedisAtomicInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate, taskExecutor), l)));
+                        (new AddressRange(a)).forEach((addr) -> clients.add(new PooledAddress(addr, new CachingRedisInteger("address:" + addr.getHostAddress(), rateLimitRedisTemplate, taskExecutor), l)));
                     } else {
-                        clients.add(new PooledAddress(InetAddress.getByName(a), new CachingRedisAtomicInteger("address:" + a, rateLimitRedisTemplate, taskExecutor), l));
+                        clients.add(new PooledAddress(InetAddress.getByName(a), new CachingRedisInteger("address:" + a, rateLimitRedisTemplate, taskExecutor), l));
                     }
                 } catch (UnknownHostException ex) {
                     throw new IllegalArgumentException("Could not bind to local address: " + ex.getMessage(), ex);
@@ -290,7 +290,7 @@ public class PooledMojangClient implements MojangClient {
             LocalAddressMojangClient client = p.getObject();
             client.resetRateLimit();
 
-            this.addresses.push(client.getAddress());
+            this.addresses.add(client.getAddress());
         }
     }
 }

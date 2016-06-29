@@ -14,10 +14,10 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public class PooledAddress {
     private final InetAddress deviceAddress;
-    private final CachingRedisAtomicInteger requestCount;
+    private final CachingRedisInteger requestCount;
     private final int rateLimit;
 
-    public PooledAddress(@Nonnull InetAddress deviceAddress, @Nonnull CachingRedisAtomicInteger requestCount, @Nonnegative int rateLimit) {
+    public PooledAddress(@Nonnull InetAddress deviceAddress, @Nonnull CachingRedisInteger requestCount, @Nonnegative int rateLimit) {
         this.deviceAddress = deviceAddress;
         this.requestCount = requestCount;
         this.rateLimit = rateLimit;
@@ -29,7 +29,7 @@ public class PooledAddress {
     }
 
     @Nonnull
-    public CachingRedisAtomicInteger getRequestCount() {
+    public CachingRedisInteger getRequestCount() {
         return this.requestCount;
     }
 

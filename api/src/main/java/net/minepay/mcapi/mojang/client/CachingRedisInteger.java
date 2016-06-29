@@ -7,23 +7,25 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * @author <a href="mailto:johannesd@torchmind.com">Johannes Donath</a>
  */
-public class CachingRedisAtomicInteger {
+@NotThreadSafe
+public class CachingRedisInteger {
     private final String keyName;
-    private final AtomicInteger integer;
+    private int integer;
     private final RedisTemplate<String, Integer> redisTemplate;
     private final TaskExecutor taskExecutor;
 
-    public CachingRedisAtomicInteger(@Nonnull String keyName, @Nonnull RedisTemplate<String, Integer> redisTemplate, @Nonnull TaskExecutor taskExecutor) {
+    public CachingRedisInteger(@Nonnull String keyName, @Nonnull RedisTemplate<String, Integer> redisTemplate, @Nonnull TaskExecutor taskExecutor) {
         this.keyName = keyName;
         this.redisTemplate = redisTemplate;
         this.taskExecutor = taskExecutor;
 
         Integer currentValue = redisTemplate.opsForValue().get(keyName);
-        this.integer = new AtomicInteger((currentValue == null ? 0 : currentValue));
+        this.integer = (currentValue == null ? 0 : currentValue);
     }
 
     /**
@@ -32,7 +34,7 @@ public class CachingRedisAtomicInteger {
      * @return a value.
      */
     public int get() {
-        return this.integer.get();
+        return this.integer;
     }
 
     /**
@@ -45,13 +47,13 @@ public class CachingRedisAtomicInteger {
             this.redisTemplate.opsForValue().increment(this.keyName, 1);
             this.redisTemplate.expire(this.keyName, 10, TimeUnit.MINUTES);
         });
-        return this.integer.incrementAndGet();
+        return this.integer++;
     }
 
     /**
      * Resets the integer value.
      */
     public void reset() {
-        this.integer.set(0);
+        this.integer = 0;
     }
 }
